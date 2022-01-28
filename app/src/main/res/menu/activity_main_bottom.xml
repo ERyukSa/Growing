@@ -10,7 +10,7 @@
     <item
         android:id="@+id/menu_motivation"
         android:icon="@drawable/video_24_round"
-        android:title="@string/motivating"
+        android:title="@string/motivation"
         app:showAsAction="ifRoom|withText"/>
 
     <item
