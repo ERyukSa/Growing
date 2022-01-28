@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_together"
+        android:icon="@drawable/together_24_outline"
+        android:title="@string/growing_together"
+        app:showAsAction="ifRoom|withText"/>
+
+    <item
+        android:id="@+id/menu_motivation"
+        android:icon="@drawable/video_24_round"
+        android:title="@string/motivating"
+        app:showAsAction="ifRoom|withText"/>
+
+    <item
+        android:id="@+id/menu_miracle_morning"
+        android:icon="@drawable/calendar_24_outline"
+        android:title="@string/miracle_morning"
+        app:showAsAction="ifRoom|withText"/>
+</menu>
