@@ -7,4 +7,9 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="gray_date">#66D4D4D4</color>
+    <color name="red_sunday">#EF5350</color>
+    <color name="red_sunday_dim">#66F0524F</color>
+    <color name="blue_saturday">#3F51B5</color>
+    <color name="blue_saturday_dim">#863F51B5</color>
 </resources>

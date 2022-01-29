@@ -1,68 +1,80 @@
-package com.eryuksa.growing.fragment.miracle_morning.util
+package com.eryuksa.growing.fragment.miracle_morning.data
 
+import androidx.lifecycle.MutableLiveData
 import java.util.*
+
+interface RefreshCalendarListener {
+    fun onRefresh(calendar: Calendar)
+}
 
 /**
  * 참조
  * Created by WoochanLee on 25/03/2019.
  * https://woochan-dev.tistory.com/27 [우찬쓰 개발블로그]
  */
-class BaseCalendar {
+class MiracleCalendar(private val refreshCalendarListener: RefreshCalendarListener) {
 
     companion object {
         const val DAYS_OF_WEEK = 7
         const val LOW_OF_CALENDAR = 6
+
+        fun newInstance(refreshCalendarListener: RefreshCalendarListener): MiracleCalendar {
+            return MiracleCalendar(refreshCalendarListener)
+        }
     }
 
-    val calendar = Calendar.getInstance()
+    val calendarLiveData = MutableLiveData(Calendar.getInstance())
 
-    var prevMonthTailOffset = 0
-    var nextMonthHeadOffset = 0
+    var prevMonthTailOffset = 0 // 첫 줄에 보여줄 저번달 날짜 개수
+    var nextMonthHeadOffset = 0 // 막 줄에 보여줄 다음달 날짜 개수
     var currentMonthMaxDate = 0
 
-    var dateList = arrayListOf<Int>() // 이번 달에 보여줄 날짜(일) 리스트
+    val dateList = arrayListOf<Int>() // 이번 달에 보여줄 날짜(일) 리스트
 
-    init {
-        calendar.time = Date() // 오늘
-    }
 
     /**
      * Init calendar.
      */
-    fun initBaseCalendar(refreshCallback: (Calendar) -> Unit) {
-        makeMonthDate(refreshCallback)
+    init {
+        calendarLiveData.value?.time = Date() // 오늘
+        makeMonthDate()
     }
 
     /**
      * Change to prev month.
      */
     fun changeToPrevMonth(refreshCallback: (Calendar) -> Unit) {
+        val calendar = calendarLiveData.value!!
+
         if(calendar.get(Calendar.MONTH) == 0){
             calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) - 1)
             calendar.set(Calendar.MONTH, Calendar.DECEMBER)
         }else {
             calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) - 1)
         }
-        makeMonthDate(refreshCallback)
+        makeMonthDate()
     }
 
     /**
      * Change to next month.
      */
     fun changeToNextMonth(refreshCallback: (Calendar) -> Unit) {
+        val calendar = calendarLiveData.value!!
+
         if(calendar.get(Calendar.MONTH) == Calendar.DECEMBER){
             calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) + 1)
             calendar.set(Calendar.MONTH, 0)
         }else {
             calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) + 1)
         }
-        makeMonthDate(refreshCallback)
+        makeMonthDate()
     }
 
     /**
      * make month date.
      */
-    private fun makeMonthDate(refreshCallback: (Calendar) -> Unit) {
+    private fun makeMonthDate() {
+        val calendar = calendarLiveData.value!!
 
         dateList.clear()
 
@@ -78,7 +90,7 @@ class BaseCalendar {
         nextMonthHeadOffset = LOW_OF_CALENDAR * DAYS_OF_WEEK - (prevMonthTailOffset + currentMonthMaxDate)
         makeNextMonthHead() // 마지막 줄의 다음달 날짜 추가
 
-        refreshCallback(calendar)
+        refreshCalendarListener.onRefresh(calendar)
     }
 
     /**

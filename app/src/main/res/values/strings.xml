@@ -3,4 +3,13 @@
     <string name="growing_together">함께 성장하기</string>
     <string name="motivation">동기부여</string>
     <string name="miracle_morning">미라클 모닝</string>
+
+    <string name="month_format">yyyy년 M월</string>
+    <string name="sunday">일</string>
+    <string name="monday">월</string>
+    <string name="tuesday">화</string>
+    <string name="wednesday">수</string>
+    <string name="thursday">목</string>
+    <string name="friday">금</string>
+    <string name="saturday">토</string>
 </resources>
