@@ -3,7 +3,6 @@ package com.eryuksa.growing.fragment.miracle_morning.data
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.eryuksa.growing.R
 import com.eryuksa.growing.databinding.ItemDateBinding
@@ -13,14 +12,11 @@ enum class DayType{
     WEEKDAY, SATURDAY, SUNDAY
 }
 
-class MiracleCalendarAdapter : RecyclerView.Adapter<MiracleCalendarAdapter.DateHolder>(),
+class MiracleCalendarAdapter(millis: Long) : RecyclerView.Adapter<MiracleCalendarAdapter.DateHolder>(),
     RefreshCalendarListener {
 
     private val miracleCalendar: MiracleCalendar =
-        MiracleCalendar.newInstance(this)
-
-    val currentCalendar: LiveData<Calendar>
-        get() = miracleCalendar.calendarLiveData
+        MiracleCalendar(millis, this)
 
     inner class DateHolder(private val binding: ItemDateBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -65,10 +61,6 @@ class MiracleCalendarAdapter : RecyclerView.Adapter<MiracleCalendarAdapter.DateH
         return miracleCalendar.dateList.size
     }
 
-    override fun onRefresh(calendar: Calendar) {
-        notifyDataSetChanged()
-    }
-
     // 인덱스에 따라 평일, 토요일, 일요일 구분
     private fun getDayType(position: Int): DayType {
         return when(position % 7) {
@@ -76,5 +68,9 @@ class MiracleCalendarAdapter : RecyclerView.Adapter<MiracleCalendarAdapter.DateH
             6 -> DayType.SATURDAY
             else -> DayType.WEEKDAY
         }
+    }
+
+    override fun onRefresh(calendar: Calendar) {
+        notifyDataSetChanged()
     }
 }

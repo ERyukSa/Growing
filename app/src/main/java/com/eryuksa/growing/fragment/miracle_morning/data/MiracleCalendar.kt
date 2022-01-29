@@ -1,6 +1,5 @@
 package com.eryuksa.growing.fragment.miracle_morning.data
 
-import androidx.lifecycle.MutableLiveData
 import java.util.*
 
 interface RefreshCalendarListener {
@@ -12,18 +11,14 @@ interface RefreshCalendarListener {
  * Created by WoochanLee on 25/03/2019.
  * https://woochan-dev.tistory.com/27 [우찬쓰 개발블로그]
  */
-class MiracleCalendar(private val refreshCalendarListener: RefreshCalendarListener) {
+class MiracleCalendar(startMillis: Long, private val refreshCalendarListener: RefreshCalendarListener) {
 
     companion object {
         const val DAYS_OF_WEEK = 7
         const val LOW_OF_CALENDAR = 6
-
-        fun newInstance(refreshCalendarListener: RefreshCalendarListener): MiracleCalendar {
-            return MiracleCalendar(refreshCalendarListener)
-        }
     }
 
-    val calendarLiveData = MutableLiveData(Calendar.getInstance())
+    val calendar= Calendar.getInstance()
 
     var prevMonthTailOffset = 0 // 첫 줄에 보여줄 저번달 날짜 개수
     var nextMonthHeadOffset = 0 // 막 줄에 보여줄 다음달 날짜 개수
@@ -36,7 +31,7 @@ class MiracleCalendar(private val refreshCalendarListener: RefreshCalendarListen
      * Init calendar.
      */
     init {
-        calendarLiveData.value?.time = Date() // 오늘
+        calendar.timeInMillis = startMillis // 지금 보여주는 달의 1일
         makeMonthDate()
     }
 
@@ -44,8 +39,6 @@ class MiracleCalendar(private val refreshCalendarListener: RefreshCalendarListen
      * Change to prev month.
      */
     fun changeToPrevMonth(refreshCallback: (Calendar) -> Unit) {
-        val calendar = calendarLiveData.value!!
-
         if(calendar.get(Calendar.MONTH) == 0){
             calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) - 1)
             calendar.set(Calendar.MONTH, Calendar.DECEMBER)
@@ -59,8 +52,6 @@ class MiracleCalendar(private val refreshCalendarListener: RefreshCalendarListen
      * Change to next month.
      */
     fun changeToNextMonth(refreshCallback: (Calendar) -> Unit) {
-        val calendar = calendarLiveData.value!!
-
         if(calendar.get(Calendar.MONTH) == Calendar.DECEMBER){
             calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) + 1)
             calendar.set(Calendar.MONTH, 0)
@@ -74,8 +65,6 @@ class MiracleCalendar(private val refreshCalendarListener: RefreshCalendarListen
      * make month date.
      */
     private fun makeMonthDate() {
-        val calendar = calendarLiveData.value!!
-
         dateList.clear()
 
         calendar.set(Calendar.DATE, 1)

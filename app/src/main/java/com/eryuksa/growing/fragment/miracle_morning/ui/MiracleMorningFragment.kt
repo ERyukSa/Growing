@@ -6,11 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
 import com.eryuksa.growing.R
 import com.eryuksa.growing.databinding.FragmentMiracleMorningBinding
-import com.eryuksa.growing.fragment.miracle_morning.data.MiracleCalendar
-import com.eryuksa.growing.fragment.miracle_morning.data.MiracleCalendarAdapter
+import com.eryuksa.growing.fragment.miracle_morning.data.CalendarViewPagerAdapter
 
 class MiracleMorningFragment : Fragment() {
 
@@ -29,16 +27,17 @@ class MiracleMorningFragment : Fragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
 
     private fun initBinding() {
-        binding.recyclerView.adapter = MiracleCalendarAdapter().also {
-            binding.calendarAdapter = it
+        binding.viewPager.apply {
+            adapter = CalendarViewPagerAdapter(this@MiracleMorningFragment)
+            binding.viewPager.currentItem = CalendarViewPagerAdapter.START_POSITION
         }
-        binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), MiracleCalendar.DAYS_OF_WEEK)
-    }
+            /*binding.recyclerView.adapter = MiracleCalendarAdapter().also {
+                binding.calendarAdapter = it
+            }*/
+            // binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), MiracleCalendar.DAYS_OF_WEEK)
+        }
 
     companion object {
         fun newInstance(): MiracleMorningFragment {

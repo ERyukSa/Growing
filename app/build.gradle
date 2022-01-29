@@ -50,4 +50,6 @@ dependencies {
     def lifecycle_version = "2.4.0"
     // ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+
+    implementation 'joda-time:joda-time:2.10.6'
 }
