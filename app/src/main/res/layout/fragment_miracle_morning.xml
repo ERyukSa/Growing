@@ -6,8 +6,8 @@
     <data>
 
         <variable
-            name="calendarAdapter"
-            type="com.eryuksa.growing.fragment.miracle_morning.data.MiracleCalendarAdapter" />
+            name="viewModel"
+            type="com.eryuksa.growing.fragment.miracle_morning.data.MiracleMorningViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -23,6 +23,7 @@
             android:textColor="@color/white"
             android:textSize="16sp"
             android:textStyle="bold"
+            android:text="@{viewModel.millisLiveData}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

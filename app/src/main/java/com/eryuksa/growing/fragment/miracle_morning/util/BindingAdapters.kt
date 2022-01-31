@@ -7,11 +7,11 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 @BindingAdapter("android:text")
-fun setText(textView: TextView, calendar: Calendar?) {
-    if (calendar != null) {
+fun setText(textView: TextView, millis: Long?) {
+    if (millis != null) {
         val formatter =
             SimpleDateFormat(textView.context.getString(R.string.month_format), Locale.KOREA)
 
-        textView.text = formatter.format(calendar.time)
+        textView.text = formatter.format(Date(millis))
     }
 }
