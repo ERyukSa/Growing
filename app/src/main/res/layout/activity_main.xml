@@ -26,7 +26,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             app:menu="@menu/activity_main_bottom"
-
             app:onItemSelectedListener="@{(menuItem) -> viewModel.setFragmentType(menuItem.itemId)}"/>
     </LinearLayout>
 </layout>

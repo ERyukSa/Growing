@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.eryuksa.growing.fragment.miracle_morning.data.MiracleMorningViewModel" />
+            type="com.eryuksa.growing.fragment.miracle_morning.data.view_model.MiracleMorningViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -15,19 +15,16 @@
         android:layout_height="match_parent"
         android:paddingHorizontal="8dp">
 
-        <TextView
-            android:id="@+id/text_month_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingVertical="16dp"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:text="@{viewModel.millisLiveData}"
-            app:layout_constraintEnd_toEndOf="parent"
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:title="@{viewModel.millisLiveData}"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="2022년 1월" />
+            app:titleTextAppearance="@style/calendarTitleStyle"
+            app:menu="@menu/fragment_miracle_morning" />
 
         <LinearLayout
             android:id="@+id/layout_day_title"
@@ -37,7 +34,7 @@
             android:paddingVertical="12dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_month_title">
+            app:layout_constraintTop_toBottomOf="@id/toolbar">
 
             <TextView
                 style="@style/dayTextStyle"

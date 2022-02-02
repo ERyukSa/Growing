@@ -4,4 +4,9 @@
         <item name="android:gravity">center</item>
         <item name="android:textSize">12sp</item>
     </style>
+
+    <style name="calendarTitleStyle" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 </resources>

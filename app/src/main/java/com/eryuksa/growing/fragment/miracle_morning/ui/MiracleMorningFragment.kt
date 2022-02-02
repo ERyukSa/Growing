@@ -1,16 +1,15 @@
 package com.eryuksa.growing.fragment.miracle_morning.ui
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.eryuksa.growing.R
 import com.eryuksa.growing.databinding.FragmentMiracleMorningBinding
-import com.eryuksa.growing.fragment.miracle_morning.data.CalendarViewPagerAdapter
-import com.eryuksa.growing.fragment.miracle_morning.data.MiracleMorningViewModel
+import com.eryuksa.growing.fragment.miracle_morning.data.adapter.CalendarViewPagerAdapter
+import com.eryuksa.growing.fragment.miracle_morning.data.view_model.MiracleMorningViewModel
+import java.util.*
 
 class MiracleMorningFragment : Fragment() {
 
@@ -18,6 +17,11 @@ class MiracleMorningFragment : Fragment() {
 
     private val viewModel: MiracleMorningViewModel by lazy {
         ViewModelProvider(this)[MiracleMorningViewModel::class.java]
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
     }
 
     override fun onCreateView(
@@ -35,9 +39,11 @@ class MiracleMorningFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.toolbar.apply {
+            menu.clear() // 오버플로우 메뉴 제거하는 역할
+            inflateMenu(R.menu.fragment_miracle_morning)
+        }
     }
-
-
     private fun initBinding(savedInstanceState: Bundle?) {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
@@ -51,12 +57,6 @@ class MiracleMorningFragment : Fragment() {
             }
 
             registerOnPageChangeCallback(viewModel.onCalendarChange) // 달력 스크롤 -> 년 월 텍스트 변경
-
-
-            /*binding.recyclerView.adapter = MiracleCalendarAdapter().also {
-            binding.calendarAdapter = it
-        }*/
-            // binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), MiracleCalendar.DAYS_OF_WEEK)
         }
     }
 

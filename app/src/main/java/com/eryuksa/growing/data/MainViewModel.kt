@@ -21,7 +21,7 @@ class MainViewModel : ViewModel() {
             _currentFragmentType.value = getFragmentType(menuItemId)
             true
         } catch (e: java.lang.IllegalArgumentException) {
-            Log.e(TAG, e.message ?: "error occured in setFragmentType()")
+            Log.e(TAG, e.message ?: "error occurred in setFragmentType()")
             false
         }
     }

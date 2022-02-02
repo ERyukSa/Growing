@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.eryuksa.growing.R
 import com.eryuksa.growing.fragment.miracle_morning.data.MiracleCalendar
-import com.eryuksa.growing.fragment.miracle_morning.data.MiracleCalendarAdapter
+import com.eryuksa.growing.fragment.miracle_morning.data.adapter.MiracleCalendarAdapter
 
 const val ARG_MILLIS = "millis"
 

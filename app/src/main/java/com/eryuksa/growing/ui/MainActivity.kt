@@ -12,6 +12,7 @@ import com.eryuksa.growing.databinding.ActivityMainBinding
 import com.eryuksa.growing.fragment.miracle_morning.ui.MiracleMorningFragment
 import com.eryuksa.growing.fragment.motivation.MotivationFragment
 import com.eryuksa.growing.fragment.together.TogetherFragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
 
@@ -20,6 +21,10 @@ class MainActivity : AppCompatActivity() {
     }
     private val viewModel: MainViewModel by lazy {
         ViewModelProvider(this)[MainViewModel::class.java]
+    }
+
+    private val bottomView: BottomNavigationView by lazy {
+        findViewById(R.id.bottom_view)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,7 +48,6 @@ class MainActivity : AppCompatActivity() {
         viewModel.currentFragmentType.observe(this) {
             setFragment(it)
         }
-
     }
 
     // 선택된 프래그먼트로 변경

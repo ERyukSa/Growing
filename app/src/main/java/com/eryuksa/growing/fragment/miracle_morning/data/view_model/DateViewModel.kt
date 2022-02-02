@@ -1,29 +1,31 @@
-package com.eryuksa.growing.fragment.miracle_morning.data
+package com.eryuksa.growing.fragment.miracle_morning.data.view_model
 
 import android.content.Context
 import androidx.core.content.ContextCompat
 import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
 import com.eryuksa.growing.R
+import com.eryuksa.growing.fragment.miracle_morning.data.model.DayType
+import com.eryuksa.growing.fragment.miracle_morning.data.model.MiracleDate
 
 class DateViewModel(private val context: Context) : BaseObservable() {
 
-    var dateNumber: Int = 0
-        set(dateNumber) {
-            field = dateNumber
+    var miracleDate: MiracleDate? = null
+        set(miracleDate) {
+            field = miracleDate
             notifyChange()
         }
 
-    var isInThisMonth = true
-    var dayType = DayType.WEEKDAY
-
     @get:Bindable
     val dateForText: String
-        get() = dateNumber.toString()
+        get() = miracleDate?.dateNumber.toString()
 
     @get:Bindable
     val dateColor: Int
         get() {
+            val isInThisMonth = miracleDate?.isInThisMonth ?: true
+            val dayType = miracleDate?.dayType ?: DayType.WEEKDAY
+
             return if (isInThisMonth && dayType == DayType.WEEKDAY) {
                 ContextCompat.getColor(context, R.color.white)
             } else if (isInThisMonth && dayType == DayType.SATURDAY) {

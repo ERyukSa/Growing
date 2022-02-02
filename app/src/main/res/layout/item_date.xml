@@ -5,20 +5,21 @@
 
     <data>
         <variable
-            name="miracleDate"
-            type="com.eryuksa.growing.fragment.miracle_morning.data.DateViewModel" />
+            name="dateViewModel"
+            type="com.eryuksa.growing.fragment.miracle_morning.data.view_model.DateViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@drawable/background_date">
 
         <TextView
             android:id="@+id/text_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{miracleDate.dateForText}"
-            android:textColor="@{miracleDate.dateColor}"
+            android:text="@{dateViewModel.dateForText}"
+            android:textColor="@{dateViewModel.dateColor}"
             android:textSize="12sp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
