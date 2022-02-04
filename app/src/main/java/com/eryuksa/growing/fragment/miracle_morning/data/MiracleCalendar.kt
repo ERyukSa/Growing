@@ -2,6 +2,7 @@ package com.eryuksa.growing.fragment.miracle_morning.data
 
 import com.eryuksa.growing.fragment.miracle_morning.data.model.DayType
 import com.eryuksa.growing.fragment.miracle_morning.data.model.MiracleDate
+import com.eryuksa.growing.fragment.miracle_morning.data.model.MonthType
 import org.joda.time.DateTime
 import java.util.*
 
@@ -14,7 +15,7 @@ interface RefreshCalendarListener {
  * Created by WoochanLee on 25/03/2019.
  * https://woochan-dev.tistory.com/27 [우찬쓰 개발블로그]
  */
-class MiracleCalendar(millis: Long, private val refreshCalendarListener: RefreshCalendarListener) {
+class MiracleCalendar(private val millis: Long, private val refreshCalendarListener: RefreshCalendarListener) {
 
     companion object {
         const val DAYS_OF_WEEK = 7
@@ -38,11 +39,10 @@ class MiracleCalendar(millis: Long, private val refreshCalendarListener: Refresh
         makeMonthDate()
     }
 
-
     /**
      * make month date.
      */
-    private fun makeMonthDate() {
+    fun makeMonthDate() {
         dateList.clear()
 
         calendar.set(Calendar.DATE, 1)
@@ -55,7 +55,7 @@ class MiracleCalendar(millis: Long, private val refreshCalendarListener: Refresh
         makeCurrentMonth(calendar) // 이번 달 날짜 추가
 
 
-        calendar.set(Calendar.DATE,  calendar.getActualMaximum(Calendar.DAY_OF_MONTH))
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH))
 
         // 마지막 주의 남은 칸에 보여줄 다음달 날짜 개수
         nextMonthHeadOffset = Calendar.SATURDAY - calendar.get(Calendar.DAY_OF_WEEK)
@@ -73,7 +73,7 @@ class MiracleCalendar(millis: Long, private val refreshCalendarListener: Refresh
         val firstDateOfTail = lastDate - prevMonthTailOffset + 1
 
         for (dateNumber in firstDateOfTail..lastDate) {
-            dateList.add(MiracleDate(dateNumber, false, getDayType(dateList.size)))
+            dateList.add(MiracleDate(dateNumber, MonthType.PREV, getDayType(dateList.size)))
         }
     }
 
@@ -82,7 +82,7 @@ class MiracleCalendar(millis: Long, private val refreshCalendarListener: Refresh
      */
     private fun makeCurrentMonth(calendar: Calendar) {
         for (dateNumber in 1..calendar.getActualMaximum(Calendar.DATE)) {
-            dateList.add(MiracleDate(dateNumber, true, getDayType(dateList.size)))
+            dateList.add(MiracleDate(dateNumber, MonthType.CURRENT, getDayType(dateList.size)))
         }
     }
 
@@ -91,7 +91,7 @@ class MiracleCalendar(millis: Long, private val refreshCalendarListener: Refresh
      */
     private fun makeNextMonthHead() {
         for (dateNumber in 1..nextMonthHeadOffset) {
-            dateList.add(MiracleDate(dateNumber, false, getDayType(dateList.size)))
+            dateList.add(MiracleDate(dateNumber, MonthType.NEXT, getDayType(dateList.size)))
         }
     }
 

@@ -3,8 +3,11 @@
     <string name="growing_together">함께 성장하기</string>
     <string name="motivation">동기부여</string>
     <string name="miracle_morning">미라클 모닝</string>
-    <string name="settings">설정</string>
+    <string name="settings">설정</string>>
     <string name="stamp">스탬프</string>
+    <string name="stamp_title">오늘의 미라클 모닝</string>
+    <string name="stamp_ok">기록</string>
+    <string name="stamp_cancel">취소</string>
 
     <string name="month_format">yyyy년 M월</string>
     <string name="sunday">일</string>

@@ -19,11 +19,6 @@ class MiracleMorningFragment : Fragment() {
         ViewModelProvider(this)[MiracleMorningViewModel::class.java]
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -42,8 +37,24 @@ class MiracleMorningFragment : Fragment() {
         binding.toolbar.apply {
             menu.clear() // 오버플로우 메뉴 제거하는 역할
             inflateMenu(R.menu.fragment_miracle_morning)
+
+            setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.menu_stamp -> {
+                        StampDialogFragment().show(
+                            this@MiracleMorningFragment.parentFragmentManager,
+                            StampDialogFragment.TAG
+                        )
+                    }
+                    R.id.menu_setting -> {
+                    }
+                }
+
+                true
+            }
         }
     }
+
     private fun initBinding(savedInstanceState: Bundle?) {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
