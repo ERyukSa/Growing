@@ -1,4 +1,4 @@
-package com.eryuksa.growing.fragment.miracle_morning.data.view_model
+package com.eryuksa.growing.fragment.miracle_morning.calendar
 
 import android.content.Context
 import androidx.core.content.ContextCompat
@@ -6,9 +6,9 @@ import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
 import androidx.lifecycle.MutableLiveData
 import com.eryuksa.growing.R
-import com.eryuksa.growing.fragment.miracle_morning.data.model.DayType
-import com.eryuksa.growing.fragment.miracle_morning.data.model.MiracleDate
-import com.eryuksa.growing.fragment.miracle_morning.data.model.MonthType
+import com.eryuksa.growing.fragment.miracle_morning.calendar.model.DayType
+import com.eryuksa.growing.fragment.miracle_morning.calendar.model.MiracleDate
+import com.eryuksa.growing.fragment.miracle_morning.calendar.model.MonthType
 
 class DateViewModel(private val context: Context) : BaseObservable() {
 
@@ -20,7 +20,7 @@ class DateViewModel(private val context: Context) : BaseObservable() {
 
     @get:Bindable
     val dateForText: String
-        get() = miracleDate?.dateNumber.toString()
+        get() = miracleDate?.dayOfMonth.toString()
 
     @get:Bindable
     val dateColor: Int

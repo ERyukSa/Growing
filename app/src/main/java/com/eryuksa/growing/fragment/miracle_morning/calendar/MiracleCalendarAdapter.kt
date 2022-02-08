@@ -1,5 +1,6 @@
-package com.eryuksa.growing.fragment.miracle_morning.data.adapter
+package com.eryuksa.growing.fragment.miracle_morning.calendar
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,39 +8,37 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.eryuksa.growing.R
 import com.eryuksa.growing.databinding.ItemDateBinding
-import com.eryuksa.growing.fragment.miracle_morning.data.MiracleCalendar
-import com.eryuksa.growing.fragment.miracle_morning.data.RefreshCalendarListener
-import com.eryuksa.growing.fragment.miracle_morning.data.model.MiracleDate
-import com.eryuksa.growing.fragment.miracle_morning.data.model.MonthType
-import com.eryuksa.growing.fragment.miracle_morning.data.view_model.DateViewModel
+import com.eryuksa.growing.fragment.miracle_morning.calendar.model.MiracleDate
+import com.eryuksa.growing.fragment.miracle_morning.calendar.model.MiracleStamp
+import com.eryuksa.growing.fragment.miracle_morning.calendar.model.MonthType
 import java.util.*
 
+
+/**
+ * 달력 날짜를 더블 클릭했을 때 프래그먼트에서 할 동작
+ */
 interface DoubleClickCallback {
-    fun onItemDoubleClicked(monthType: MonthType, dayOfMonth: Int)
+    fun onItemDoubleClicked(clickedMillis: Long, dayOfMonth: Int)
 }
 
-class MiracleCalendarAdapter(private val millis: Long, doubleClickCallback: DoubleClickCallback) :
-    RecyclerView.Adapter<MiracleCalendarAdapter.DateHolder>(),
-    RefreshCalendarListener {
+class MiracleCalendarAdapter(
+    private val calendarViewModel: CalendarViewModel,
+    doubleClickCallback: DoubleClickCallback
+) :
+    RecyclerView.Adapter<MiracleCalendarAdapter.DateHolder>() {
 
     private val onDoubleClicked = doubleClickCallback::onItemDoubleClicked
 
-    private val miracleCalendar: MiracleCalendar =
-        MiracleCalendar(millis, this)
-    private val dateList get() = miracleCalendar.dateList
+    private val miracleCalendar: MiracleCalendar
+        get() = calendarViewModel.miracleCalendar
+    private val dateList
+        get() = miracleCalendar.dateList
+
+    private val millis: Long get() = calendarViewModel.monthMillis // 지금 보여주는 달
+    private val prevMonthMillis get() = calendarViewModel.prevMonthMillis
+    private val nextMonthMillis get() = calendarViewModel.nextMonthMillis
 
     private var selectedPos = initSelectedPos()
-
-    fun updateStamp(monthTypeOrdinal: Int, dayOfMonth: Int, minutesOfDay: Int) {
-        val pos = when(monthTypeOrdinal) {
-            MonthType.PREV.ordinal -> dayOfMonth - dateList[0].dateNumber
-            MonthType.CURRENT.ordinal -> miracleCalendar.prevMonthTailOffset + dayOfMonth - 1
-            else -> miracleCalendar.prevMonthTailOffset + miracleCalendar.currentMonthMaxDate + dayOfMonth - 1
-        }
-
-        dateList[pos].wakeUpMinutes.value = minutesOfDay
-        notifyItemChanged(pos)
-    }
 
     inner class DateHolder(private val binding: ItemDateBinding) :
         RecyclerView.ViewHolder(binding.root), View.OnClickListener {
@@ -53,6 +52,7 @@ class MiracleCalendarAdapter(private val millis: Long, doubleClickCallback: Doub
 
         fun bind(pos: Int) {
             miracleDate = dateList[pos]
+            Log.d("MiracleCalendarAdapter", "pos $pos, stamp: ${miracleDate.wakeUpMinutes.value}" )
             binding.dateViewModel?.miracleDate = miracleDate
 
             itemView.isSelected = pos == selectedPos
@@ -62,14 +62,20 @@ class MiracleCalendarAdapter(private val millis: Long, doubleClickCallback: Doub
             if (adapterPosition == RecyclerView.NO_POSITION) return
 
             if (selectedPos == adapterPosition) {
-                onDoubleClicked(miracleDate.monthType, miracleDate.dateNumber)
+                val monthMillis = when (miracleDate.monthType) {
+                    MonthType.PREV -> prevMonthMillis
+                    MonthType.CURRENT -> millis
+                    MonthType.NEXT -> nextMonthMillis
+                }
+
+                onDoubleClicked(monthMillis, miracleDate.dayOfMonth)
             } else {
                 changeSelectedState()
             }
         }
 
         /**
-         *  selected 아이템 뷰 변경
+         * selected 아이템 뷰 변경
          */
         private fun changeSelectedState() {
             notifyItemChanged(selectedPos) // 이전에 선택된 아이템뷰의 selected 해제
@@ -101,10 +107,6 @@ class MiracleCalendarAdapter(private val millis: Long, doubleClickCallback: Doub
         return dateList.size
     }
 
-    override fun onRefresh(calendar: Calendar) {
-        notifyDataSetChanged()
-    }
-
     /**
      * 이번 달이면 오늘 날짜를 selected, 아니면 1일을 선택
      */
@@ -127,5 +129,23 @@ class MiracleCalendarAdapter(private val millis: Long, doubleClickCallback: Doub
         }
 
         itemView.layoutParams.height = parent.height / lengthOfRow
+    }
+
+    /**
+     * 사용자가 일어난 시간을 기록했을 때
+     */
+    fun updateStamp(stamp: MiracleStamp) {
+
+        // 업데이트된 데이터의 인덱스
+        val position = when {
+            stamp.monthMillis < millis -> stamp.dayOfMonth - dateList[0].dayOfMonth
+
+            stamp.monthMillis == millis -> miracleCalendar.prevMonthTailOffset + stamp.dayOfMonth - 1
+
+            else -> (dateList.size - miracleCalendar.nextMonthHeadOffset) + stamp.dayOfMonth - 1
+        }
+
+        dateList[position].wakeUpMinutes.value = stamp.wakeUpMinutes
+        notifyItemChanged(position)
     }
 }

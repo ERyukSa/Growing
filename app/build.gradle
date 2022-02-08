@@ -51,5 +51,10 @@ dependencies {
     // ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
 
+    // DateTime
     implementation 'joda-time:joda-time:2.10.6'
+
+    // Room
+    implementation 'androidx.room:room-runtime:2.4.1'
+    kapt 'androidx.room:room-compiler:2.4.1'
 }

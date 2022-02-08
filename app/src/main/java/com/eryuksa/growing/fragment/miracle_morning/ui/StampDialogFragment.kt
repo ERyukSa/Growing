@@ -8,7 +8,8 @@ import android.widget.Button
 import android.widget.TimePicker
 import androidx.fragment.app.DialogFragment
 import com.eryuksa.growing.R
-import com.eryuksa.growing.fragment.miracle_morning.data.model.MonthType
+import com.eryuksa.growing.fragment.miracle_morning.calendar.ARG_MILLIS
+import com.eryuksa.growing.fragment.miracle_morning.calendar.REQUEST_TODAY_STAMP
 import org.joda.time.DateTime
 
 class StampDialogFragment : DialogFragment() {
@@ -17,9 +18,8 @@ class StampDialogFragment : DialogFragment() {
     private lateinit var buttonOk: Button
     private lateinit var buttonCancel: Button
 
-    private var millis: Long = 0
-    private var monthTypeOrdinal = 1
-    private var mDayOfMonth = 1
+    private var monthMillis: Long = 0
+    private var mDayOfMonth = 1 // 일
 
     private var mMinuteOfDay = 0
 
@@ -27,8 +27,7 @@ class StampDialogFragment : DialogFragment() {
         super.onCreate(savedInstanceState)
 
         arguments?.let {
-            millis = it.getLong(ARG_MILLIS, System.currentTimeMillis())
-            monthTypeOrdinal = it.getInt(ARG_MONTH_TYPE, 1)
+            monthMillis = it.getLong(ARG_MILLIS, System.currentTimeMillis())
             mDayOfMonth = it.getInt(ARG_DATE, 1)
         }
 
@@ -59,25 +58,15 @@ class StampDialogFragment : DialogFragment() {
         buttonOk = view.findViewById(R.id.button_ok)
         buttonCancel = view.findViewById(R.id.button_cancel)
 
-        timePicker.setOnTimeChangedListener { timePicker, hour, minute ->
-            mMinuteOfDay = hour * 60 + minute
-        }
-
         buttonOk.setOnClickListener {
             val bundle = Bundle().apply {
-                putInt(RESULT_MINUTES, mMinuteOfDay)
-                putInt(RESULT_DATE, mDayOfMonth)
-                putInt(RESULT_MONTH_TYPE, monthTypeOrdinal)
+                putLong(RESULT_MILLIS, monthMillis)  // 월
+                putInt(RESULT_DATE, mDayOfMonth )    // 일
+                putInt(RESULT_MINUTES, timePicker.hour * 60 + timePicker.minute) // 분
             }
+
             parentFragmentManager.setFragmentResult(REQUEST_TODAY_STAMP, bundle)
             dismiss()
-        }
-
-
-        val monthMillis = when (monthTypeOrdinal) {
-            MonthType.PREV.ordinal -> DateTime(millis).minusMonths(1).millis
-            MonthType.CURRENT.ordinal -> millis
-            else -> DateTime(millis).plusMonths(1).millis
         }
 
         return view
@@ -86,17 +75,15 @@ class StampDialogFragment : DialogFragment() {
     companion object {
         const val TAG = "StampDialog"
 
-        const val ARG_MONTH_TYPE = "month"
         const val ARG_DATE = "dayOfMonth"
 
         const val RESULT_MINUTES = "minuteOfDay"
-        const val RESULT_MONTH_TYPE = "month"
+        const val RESULT_MILLIS = "millis"
         const val RESULT_DATE = "dayOfMonth"
 
-        fun newInstance(millis: Long, monthTypeInt: Int, dayOfMonth: Int): StampDialogFragment {
+        fun newInstance(millis: Long, dayOfMonth: Int): StampDialogFragment {
             val bundle = Bundle().apply {
                 putLong(ARG_MILLIS, millis)
-                putInt(ARG_MONTH_TYPE, monthTypeInt)
                 putInt(ARG_DATE, dayOfMonth)
             }
 

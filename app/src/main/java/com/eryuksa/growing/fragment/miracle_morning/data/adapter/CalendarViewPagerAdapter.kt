@@ -2,7 +2,7 @@ package com.eryuksa.growing.fragment.miracle_morning.data.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.eryuksa.growing.fragment.miracle_morning.ui.CalendarFragment
+import com.eryuksa.growing.fragment.miracle_morning.calendar.CalendarFragment
 import org.joda.time.DateTime
 
 private const val TAG = "CalendarViewPagerAdapt"

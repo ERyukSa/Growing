@@ -1,8 +1,8 @@
-package com.eryuksa.growing.fragment.miracle_morning.data
+package com.eryuksa.growing.fragment.miracle_morning.calendar
 
-import com.eryuksa.growing.fragment.miracle_morning.data.model.DayType
-import com.eryuksa.growing.fragment.miracle_morning.data.model.MiracleDate
-import com.eryuksa.growing.fragment.miracle_morning.data.model.MonthType
+import com.eryuksa.growing.fragment.miracle_morning.calendar.model.DayType
+import com.eryuksa.growing.fragment.miracle_morning.calendar.model.MiracleDate
+import com.eryuksa.growing.fragment.miracle_morning.calendar.model.MonthType
 import org.joda.time.DateTime
 import java.util.*
 
@@ -10,12 +10,13 @@ interface RefreshCalendarListener {
     fun onRefresh(calendar: Calendar)
 }
 
+
 /**
  * 참조
  * Created by WoochanLee on 25/03/2019.
  * https://woochan-dev.tistory.com/27 [우찬쓰 개발블로그]
  */
-class MiracleCalendar(private val millis: Long, private val refreshCalendarListener: RefreshCalendarListener) {
+class MiracleCalendar(millis: Long) {
 
     companion object {
         const val DAYS_OF_WEEK = 7
@@ -24,6 +25,8 @@ class MiracleCalendar(private val millis: Long, private val refreshCalendarListe
     }
 
     val calendar: Calendar = Calendar.getInstance()
+    val preMonthMillis: Long
+    val nextMonthMillis: Long
 
     var prevMonthTailOffset = 0 // 첫 줄에 보여줄 저번달 날짜 개수
     var nextMonthHeadOffset = 0 // 막 줄에 보여줄 다음달 날짜 개수
@@ -36,7 +39,17 @@ class MiracleCalendar(private val millis: Long, private val refreshCalendarListe
      */
     init {
         calendar.timeInMillis = millis // 지금 보여주는 달의 1일
-        makeMonthDate()
+
+        // 이전 달 millis
+        calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) - 1)
+        preMonthMillis = calendar.timeInMillis
+
+        // 다음 달 millis
+        calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) + 2)
+        nextMonthMillis = calendar.timeInMillis
+
+        calendar.timeInMillis = millis // 원상 복구
+        makeMonthDate() // date 생성
     }
 
     /**
@@ -49,19 +62,16 @@ class MiracleCalendar(private val millis: Long, private val refreshCalendarListe
 
         currentMonthMaxDate = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
 
-        prevMonthTailOffset = calendar.get(Calendar.DAY_OF_WEEK) - Calendar.SUNDAY
+        prevMonthTailOffset = calendar.get(Calendar.DAY_OF_WEEK)
 
         makePrevMonthTail(calendar.clone() as Calendar) // 첫 줄에 들어갈 이전 달의 날짜 추가
         makeCurrentMonth(calendar) // 이번 달 날짜 추가
-
 
         calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH))
 
         // 마지막 주의 남은 칸에 보여줄 다음달 날짜 개수
         nextMonthHeadOffset = Calendar.SATURDAY - calendar.get(Calendar.DAY_OF_WEEK)
         makeNextMonthHead() // 마지막 줄의 다음달 날짜 추가
-
-        refreshCalendarListener.onRefresh(calendar)
     }
 
     /**
