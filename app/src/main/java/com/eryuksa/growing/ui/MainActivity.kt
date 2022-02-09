@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() {
         var fragment = supportFragmentManager.findFragmentByTag(fragmentType.name)
         val transaction = supportFragmentManager.beginTransaction()
 
-        // 앱에 처음 진입하는 경우
+        // 앱을 실행하고 선택한 화면을 처음 보여줄 때
         if (fragment == null) {
             fragment = when (fragmentType) {
                 MainFragmentType.TOGETHER -> TogetherFragment.newInstance()
@@ -58,7 +58,8 @@ class MainActivity : AppCompatActivity() {
                 MainFragmentType.MIRACLE_MORNING -> MiracleMorningFragment.newInstance()
             }
 
-            // 프래그먼트 인스턴스를 처음 생성해서, FM의 프래그먼트 리스트에 추가한다
+            // 프래그먼트 인스턴스를 생성해서 fm의 프래그먼트 리스트에 추가한다
+            // replace를 하면 그전에 add 되었던 프래그먼트가 삭제된다
             transaction.add(R.id.fragment_container, fragment, fragmentType.name)
         }
 
@@ -73,7 +74,7 @@ class MainActivity : AppCompatActivity() {
         transaction: FragmentTransaction
     ) {
         MainFragmentType.values()
-            .filterNot { it == fragmentType }
+            .filterNot { it == fragmentType } // fragmentType이 아닌 type들로 필터링
             .forEach {
                 val toHideFragment = supportFragmentManager.findFragmentByTag(it.name)
                 toHideFragment?.let {

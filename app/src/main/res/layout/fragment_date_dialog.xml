@@ -17,11 +17,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TimePicker
-        android:id="@+id/time_picker"
+    <DatePicker
+        android:id="@+id/date_picker"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:timePickerMode="spinner"
         app:layout_constraintBottom_toTopOf="@id/button_cancel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

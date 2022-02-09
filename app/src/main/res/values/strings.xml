@@ -6,8 +6,8 @@
     <string name="settings">설정</string>>
     <string name="stamp">스탬프</string>
     <string name="stamp_title">오늘의 미라클 모닝</string>
-    <string name="stamp_ok">기록</string>
-    <string name="stamp_cancel">취소</string>
+    <string name="confirm">확인</string>
+    <string name="cancel">취소</string>
 
     <string name="month_format">yyyy년 M월</string>
     <string name="sunday">일</string>
@@ -18,5 +18,10 @@
     <string name="friday">금</string>
     <string name="saturday">토</string>
 
-
+    <string name="start_date">시작 날짜</string>
+    <string name="goal_minute">목표 시간</string>
+    <string name="start_date_format">%1$d년 %2$d월 %3$d일</string>
+    <string name="goal_time_format">%1$s %2$d시 %3$d분</string>
+    <string name="am">오전</string>
+    <string name="pm">오후</string>
 </resources>

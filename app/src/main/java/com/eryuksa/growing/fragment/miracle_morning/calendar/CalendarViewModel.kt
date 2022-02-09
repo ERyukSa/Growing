@@ -3,7 +3,7 @@ package com.eryuksa.growing.fragment.miracle_morning.calendar
 import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.*
-import com.eryuksa.growing.fragment.miracle_morning.calendar.database.CalendarRepository
+import com.eryuksa.growing.fragment.miracle_morning.database.CalendarRepository
 import com.eryuksa.growing.fragment.miracle_morning.calendar.model.MiracleStamp
 import com.eryuksa.growing.fragment.miracle_morning.ui.StampDialogFragment
 import kotlinx.coroutines.joinAll

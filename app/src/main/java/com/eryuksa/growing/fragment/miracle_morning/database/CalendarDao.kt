@@ -1,4 +1,4 @@
-package com.eryuksa.growing.fragment.miracle_morning.calendar.database
+package com.eryuksa.growing.fragment.miracle_morning.database
 
 import androidx.room.*
 import com.eryuksa.growing.fragment.miracle_morning.calendar.model.MiracleStamp
