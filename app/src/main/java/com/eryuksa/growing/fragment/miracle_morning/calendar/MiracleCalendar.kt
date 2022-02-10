@@ -1,5 +1,6 @@
 package com.eryuksa.growing.fragment.miracle_morning.calendar
 
+import android.util.Log
 import com.eryuksa.growing.fragment.miracle_morning.calendar.model.DayType
 import com.eryuksa.growing.fragment.miracle_morning.calendar.model.MiracleDate
 import com.eryuksa.growing.fragment.miracle_morning.calendar.model.MonthType
@@ -62,7 +63,7 @@ class MiracleCalendar(millis: Long) {
 
         currentMonthMaxDate = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
 
-        prevMonthTailOffset = calendar.get(Calendar.DAY_OF_WEEK)
+        prevMonthTailOffset = calendar.get(Calendar.DAY_OF_WEEK) - Calendar.SUNDAY
 
         makePrevMonthTail(calendar.clone() as Calendar) // 첫 줄에 들어갈 이전 달의 날짜 추가
         makeCurrentMonth(calendar) // 이번 달 날짜 추가
@@ -80,9 +81,10 @@ class MiracleCalendar(millis: Long) {
     private fun makePrevMonthTail(calendar: Calendar) {
         calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) - 1)
         val lastDate = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
-        val firstDateOfTail = lastDate - prevMonthTailOffset + 1
+        val firstDate = lastDate - prevMonthTailOffset + 1
+        Log.d("MiracleCalendar", "prevOffset: $prevMonthTailOffset, firstDate: $firstDate, lastDate: $lastDate")
 
-        for (dateNumber in firstDateOfTail..lastDate) {
+        for (dateNumber in firstDate..lastDate) {
             dateList.add(MiracleDate(dateNumber, MonthType.PREV, getDayType(dateList.size)))
         }
     }

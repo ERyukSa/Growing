@@ -48,6 +48,7 @@ class DateDialogFragment : DialogFragment() {
             .resources.getIdentifier("date_picker_header", "id", "android")
         datePicker.findViewById<View>(pickerHeaderId).visibility = View.GONE
 
+
         buttonOk = view.findViewById(R.id.button_ok)
         buttonCancel = view.findViewById(R.id.button_cancel)
 

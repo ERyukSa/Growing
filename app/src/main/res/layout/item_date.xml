@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="dateViewModel"
             type="com.eryuksa.growing.fragment.miracle_morning.calendar.DateViewModel" />
@@ -21,9 +22,9 @@
             android:text="@{dateViewModel.dateForText}"
             android:textColor="@{dateViewModel.dateColor}"
             android:textSize="12sp"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/image_stamp"
@@ -31,10 +32,12 @@
             android:layout_height="0dp"
             android:src="@android:color/transparent"
             android:tint="@color/green_stamp"
-            app:stamp="@{dateViewModel.wakeUpStamp}"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/text_date"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:currentDate="@{dateViewModel.currentDate}"
+            app:monthType="@{dateViewModel.miracleDate.monthType}"
+            app:stamp="@{dateViewModel.wakeUpStamp}" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

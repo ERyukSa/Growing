@@ -72,11 +72,24 @@ class SettingsDialogFragment : DialogFragment(), FragmentResultListener {
             GoalDialogFragment.newInstance().show(parentFragmentManager, GoalDialogFragment.TAG)
         }
 
-        binding.buttonOk.setOnClickListener {
-            if (isDateChanged) saveStartDate()
-            if (isTimeChanged) saveGoalTime()
+        binding.buttonCancel.setOnClickListener {
+            dismiss()
+        }
 
-            parentFragmentManager.setFragmentResult(RESULT_SETTINGS, bundleOf(ARG_CHANGED to true))
+        // 설정이 변경되었을 때만 결과를 전달한다
+        binding.buttonOk.setOnClickListener {
+            if (isDateChanged) {
+                saveStartDate()
+                parentFragmentManager
+                    .setFragmentResult(RESULT_SETTINGS, bundleOf(ARG_CHANGED to true))
+            }
+
+            if (isTimeChanged) {
+                saveGoalTime()
+                parentFragmentManager
+                    .setFragmentResult(RESULT_SETTINGS, bundleOf(ARG_CHANGED to true))
+            }
+
             dismiss()
         }
     }

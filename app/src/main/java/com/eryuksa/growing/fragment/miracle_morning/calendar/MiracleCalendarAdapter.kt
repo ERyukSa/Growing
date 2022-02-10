@@ -1,6 +1,5 @@
 package com.eryuksa.growing.fragment.miracle_morning.calendar
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,6 +32,8 @@ class MiracleCalendarAdapter(
         get() = calendarViewModel.miracleCalendar
     private val dateList
         get() = miracleCalendar.dateList
+    private val calendar: Calendar
+        get() = miracleCalendar.calendar
 
     private val millis: Long get() = calendarViewModel.monthMillis // 지금 보여주는 달
     private val prevMonthMillis get() = calendarViewModel.prevMonthMillis
@@ -46,13 +47,12 @@ class MiracleCalendarAdapter(
         lateinit var miracleDate: MiracleDate
 
         init {
-            binding.dateViewModel = DateViewModel(itemView.context)
+            binding.dateViewModel = DateViewModel(itemView.context, calendar)
             itemView.setOnClickListener(this)
         }
 
         fun bind(pos: Int) {
             miracleDate = dateList[pos]
-            Log.d("MiracleCalendarAdapter", "pos $pos, stamp: ${miracleDate.wakeUpMinutes.value}" )
             binding.dateViewModel?.miracleDate = miracleDate
 
             itemView.isSelected = pos == selectedPos
