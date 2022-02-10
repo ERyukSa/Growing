@@ -18,7 +18,7 @@ import java.util.*
  * 달력 날짜를 더블 클릭했을 때 프래그먼트에서 할 동작
  */
 interface DoubleClickCallback {
-    fun onItemDoubleClicked(clickedMillis: Long, dayOfMonth: Int)
+    fun onItemDoubleClicked(clickedMillis: Long, dayOfMonth: Int, wakeUpMinutes: Int?)
 }
 
 class MiracleCalendarAdapter(
@@ -68,7 +68,7 @@ class MiracleCalendarAdapter(
                     MonthType.NEXT -> nextMonthMillis
                 }
 
-                onDoubleClicked(monthMillis, miracleDate.dayOfMonth)
+                onDoubleClicked(monthMillis, miracleDate.dayOfMonth, miracleDate.wakeUpMinutes.value)
             } else {
                 changeSelectedState()
             }

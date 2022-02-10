@@ -4,14 +4,15 @@ import android.os.Bundle
 import android.view.*
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentResultListener
 import androidx.lifecycle.ViewModelProvider
 import com.eryuksa.growing.R
 import com.eryuksa.growing.databinding.FragmentMiracleMorningBinding
-import com.eryuksa.growing.fragment.miracle_morning.data.adapter.CalendarViewPagerAdapter
 import com.eryuksa.growing.fragment.miracle_morning.data.view_model.MiracleMorningViewModel
+import com.eryuksa.growing.fragment.miracle_morning.settings.SettingsDialogFragment
 import java.util.*
 
-class MiracleMorningFragment : Fragment() {
+class MiracleMorningFragment : Fragment(), FragmentResultListener {
 
     private lateinit var binding: FragmentMiracleMorningBinding
 
@@ -29,13 +30,16 @@ class MiracleMorningFragment : Fragment() {
 
         initBinding(savedInstanceState)
 
+        parentFragmentManager
+            .setFragmentResultListener(REQUEST_SETTINGS, viewLifecycleOwner, this)
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.toolbar.apply {
-            menu.clear() // 오버플로우 메뉴 제거하는 역할
+            menu.clear() // 오버플로우 버튼 제거하는 역할
             inflateMenu(R.menu.fragment_miracle_morning)
 
             setOnMenuItemClickListener {
@@ -71,7 +75,24 @@ class MiracleMorningFragment : Fragment() {
         }
     }
 
+    override fun onFragmentResult(requestKey: String, result: Bundle) {
+        when(requestKey) {
+            REQUEST_SETTINGS -> {
+                val isChanged =
+                    result.getBoolean(SettingsDialogFragment.ARG_CHANGED, true)
+
+                if (isChanged) {
+                    binding.viewPager.adapter = CalendarViewPagerAdapter(this)
+                    binding.viewPager.setCurrentItem(viewModel.currentPosition, false)
+                }
+            }
+        }
+    }
+
     companion object {
+
+        const val REQUEST_SETTINGS = "settings"
+
         fun newInstance(): MiracleMorningFragment {
             return MiracleMorningFragment()
         }

@@ -1,4 +1,4 @@
-package com.eryuksa.growing.fragment.miracle_morning.data.adapter
+package com.eryuksa.growing.fragment.miracle_morning.ui
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter

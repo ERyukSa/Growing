@@ -7,10 +7,11 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import com.eryuksa.growing.R
+import com.eryuksa.growing.config.GrowingApplication
 import java.text.SimpleDateFormat
 import java.util.*
 
-private const val GOAL_MINUTES = 390
+val goalMinutes get() = GrowingApplication.goalMinutes
 
 @BindingAdapter("android:text")
 fun setText(textView: TextView, millis: Long?) {
@@ -34,12 +35,14 @@ fun setTitle(toolbar: Toolbar, millis: Long?) {
 
 @BindingAdapter("app:stamp")
 fun setStamp(imageView: ImageView, minutesOfDay: Int?) {
+    if (goalMinutes == null) return
+
     when {
         minutesOfDay == null -> {
             imageView.setImageResource(R.drawable.round_close_20)
             imageView.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(imageView.context, R.color.red_sunday))
         }
-        minutesOfDay <= GOAL_MINUTES -> {
+        minutesOfDay <= goalMinutes!! -> {
             imageView.setImageResource(R.drawable.round_verified_20)
             imageView.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(imageView.context, R.color.green_stamp))
         }

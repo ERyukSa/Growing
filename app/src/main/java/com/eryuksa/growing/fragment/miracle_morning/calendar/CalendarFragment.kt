@@ -52,11 +52,8 @@ class CalendarFragment : Fragment(), FragmentResultListener, DoubleClickCallback
             GridLayoutManager(requireContext(), MiracleCalendar.DAYS_OF_WEEK)
         recyclerView.adapter = adapter
 
-        parentFragmentManager.setFragmentResultListener(
-            REQUEST_TODAY_STAMP,
-            viewLifecycleOwner,
-            this
-        )
+        parentFragmentManager
+            .setFragmentResultListener(REQUEST_TODAY_STAMP, viewLifecycleOwner, this)
 
         return view
     }
@@ -76,7 +73,6 @@ class CalendarFragment : Fragment(), FragmentResultListener, DoubleClickCallback
     }
 
     override fun onFragmentResult(requestKey: String, result: Bundle) {
-
         viewModel.onFragmentResult(requestKey, result)
     }
 
@@ -95,8 +91,8 @@ class CalendarFragment : Fragment(), FragmentResultListener, DoubleClickCallback
     /**
      * 달력 아이템 더블 클릭했을 때 동작 설정
      */
-    override fun onItemDoubleClicked(monthMillis: Long, dayOfMonth: Int) {
-        StampDialogFragment.newInstance(monthMillis, dayOfMonth).show(
+    override fun onItemDoubleClicked(clickedMillis: Long, dayOfMonth: Int, wakeUpMinutes: Int?) {
+        StampDialogFragment.newInstance(clickedMillis, dayOfMonth, wakeUpMinutes ?: -1).show(
             this.parentFragmentManager,
             StampDialogFragment.TAG
         )

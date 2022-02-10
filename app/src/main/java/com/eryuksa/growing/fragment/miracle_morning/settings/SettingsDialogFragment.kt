@@ -1,13 +1,15 @@
-package com.eryuksa.growing.fragment.miracle_morning.ui
+package com.eryuksa.growing.fragment.miracle_morning.settings
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentResultListener
 import com.eryuksa.growing.R
+import com.eryuksa.growing.config.GrowingApplication
 import com.eryuksa.growing.databinding.FragmentSettingsDialogBinding
 
 const val REQUEST_START_DATES = "startDate"
@@ -17,11 +19,11 @@ class SettingsDialogFragment : DialogFragment(), FragmentResultListener {
 
     private lateinit var binding: FragmentSettingsDialogBinding
 
-    private var year = 0
-    private var month = 0
-    private var dayOfMonth = 0
+    private val startDate: GrowingApplication.StartDate?
+        get() = GrowingApplication.startDate
 
-    private var goalMinutes = 0
+    private var isDateChanged = false
+    private var isTimeChanged = false
 
     override fun onStart() {
         super.onStart()
@@ -43,23 +45,20 @@ class SettingsDialogFragment : DialogFragment(), FragmentResultListener {
         binding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_settings_dialog, container, false)
 
-        /*
-        buttonOk.setOnClickListener {
-            val bundle = Bundle().apply {
-            }
+        startDate?.let{
+            initStateDatesText() // 시작 날짜 텍스트 초기회
+        }
 
-            parentFragmentManager.setFragmentResult(REQUEST_TODAY_STAMP, bundle)
-            dismiss()
-        }*/
+        GrowingApplication.goalMinutes?.let {
+            initGoalMinutesText() // 목표 시간 텍스트 초기화
+        }
 
         parentFragmentManager.apply {
             setFragmentResultListener(REQUEST_GOAL_MINUTE, viewLifecycleOwner, this@SettingsDialogFragment)
             setFragmentResultListener(REQUEST_START_DATES, viewLifecycleOwner, this@SettingsDialogFragment)
-
         }
 
         return binding.root
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -72,22 +71,39 @@ class SettingsDialogFragment : DialogFragment(), FragmentResultListener {
         binding.buttonGoalTime.setOnClickListener {
             GoalDialogFragment.newInstance().show(parentFragmentManager, GoalDialogFragment.TAG)
         }
+
+        binding.buttonOk.setOnClickListener {
+            if (isDateChanged) saveStartDate()
+            if (isTimeChanged) saveGoalTime()
+
+            parentFragmentManager.setFragmentResult(RESULT_SETTINGS, bundleOf(ARG_CHANGED to true))
+            dismiss()
+        }
     }
 
     override fun onFragmentResult(requestKey: String, result: Bundle) {
         when (requestKey) {
             REQUEST_START_DATES -> {
-                year = result.getInt(DateDialogFragment.RESULT_YEAR)
-                month = result.getInt(DateDialogFragment.RESULT_MONTH)
-                dayOfMonth = result.getInt(DateDialogFragment.RESULT_DATE)
+                if (startDate == null) {
+                    GrowingApplication.startDate =
+                        GrowingApplication.StartDate(0, 0, 0)
+                }
 
-                setStateDatesText()
+                startDate!!.apply{
+                    year = result.getInt(DateDialogFragment.RESULT_YEAR)
+                    month = result.getInt(DateDialogFragment.RESULT_MONTH)
+                    date = result.getInt(DateDialogFragment.RESULT_DATE)
+                }
+
+                initStateDatesText() // 바뀐 날짜로 텍스트 초기화
+                isDateChanged = true
             }
 
             REQUEST_GOAL_MINUTE -> {
-                goalMinutes = result.getInt(GoalDialogFragment.RESULT_MINUTE)
+                GrowingApplication.goalMinutes = result.getInt(GoalDialogFragment.RESULT_MINUTE)
 
-                setGoalMinutesText()
+                initGoalMinutesText() // 바뀐 시간으로 텍스트 초기화
+                isTimeChanged = true
             }
         }
     }
@@ -95,15 +111,19 @@ class SettingsDialogFragment : DialogFragment(), FragmentResultListener {
     /**
      * 미라클 모닝 시작 날짜 텍스트 설정
      */
-    private fun setStateDatesText() {
-        binding.textStartDate.text =
-            getString(R.string.start_date_format, year, month, dayOfMonth)
+    private fun initStateDatesText() {
+        startDate?.let {
+            binding.textStartDate.text =
+                getString(R.string.start_date_format, it.year, it.month, it.date)
+        }
     }
 
     /**
      * 목표 기상 시간 텍스트 설정
      */
-    private fun setGoalMinutesText() {
+    private fun initGoalMinutesText() {
+        val goalMinutes = GrowingApplication.goalMinutes ?: return
+
         val beforeNoon: String =
             if (goalMinutes < 720) getString(R.string.am)
             else getString(R.string.pm)
@@ -116,9 +136,34 @@ class SettingsDialogFragment : DialogFragment(), FragmentResultListener {
             getString(R.string.goal_time_format, beforeNoon, hour, goalMinutes%60)
     }
 
+    /**
+     * 바뀐 시작 날짜를 프리퍼런스에 저장
+     */
+    private fun saveStartDate() {
+        startDate?.let {
+            GrowingApplication.sSharedPreferences
+                .edit()
+                .putInt(GrowingApplication.START_YEAR, it.year)
+                .putInt(GrowingApplication.START_MONTH, it.month)
+                .putInt(GrowingApplication.START_DATE, it.date)
+                .apply()
+        }
+    }
+
+    private fun saveGoalTime() {
+        GrowingApplication.goalMinutes?.let {
+            GrowingApplication.sSharedPreferences
+                .edit()
+                .putInt(GrowingApplication.ARG_GOAL_MINUTES, it)
+                .apply()
+        }
+    }
+
     companion object {
 
         const val TAG = "SettingsDialogFragment"
+        const val RESULT_SETTINGS = "settings"
+        const val ARG_CHANGED = "changed"
 
         fun newInstance(): SettingsDialogFragment {
             val bundle = Bundle().apply {

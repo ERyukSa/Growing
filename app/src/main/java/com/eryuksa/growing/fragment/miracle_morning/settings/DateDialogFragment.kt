@@ -1,4 +1,4 @@
-package com.eryuksa.growing.fragment.miracle_morning.ui
+package com.eryuksa.growing.fragment.miracle_morning.settings
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,6 +9,7 @@ import android.widget.DatePicker
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import com.eryuksa.growing.R
+import com.eryuksa.growing.config.GrowingApplication
 
 class DateDialogFragment : DialogFragment() {
 
@@ -16,6 +17,8 @@ class DateDialogFragment : DialogFragment() {
     private lateinit var buttonOk: Button
     private lateinit var buttonCancel: Button
 
+    private val startDate: GrowingApplication.StartDate?
+        get() = GrowingApplication.startDate
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,18 +51,34 @@ class DateDialogFragment : DialogFragment() {
         buttonOk = view.findViewById(R.id.button_ok)
         buttonCancel = view.findViewById(R.id.button_cancel)
 
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // 이전과 달라졌을 때만 결과 전달
         buttonOk.setOnClickListener {
-            val bundle = Bundle().apply {
-                putInt(RESULT_YEAR, datePicker.year)
-                putInt(RESULT_MONTH, datePicker.month)
-                putInt(RESULT_DATE, datePicker.dayOfMonth)
+            if (startDate?.year != datePicker.year ||
+                startDate?.month != datePicker.month ||
+                startDate?.date != datePicker.dayOfMonth
+            ) {
+
+                val bundle = Bundle().apply {
+                    putInt(RESULT_YEAR, datePicker.year)
+                    putInt(RESULT_MONTH, datePicker.month + 1)
+                    putInt(RESULT_DATE, datePicker.dayOfMonth)
+                }
+
+                parentFragmentManager.setFragmentResult(REQUEST_START_DATES, bundle)
             }
 
-            parentFragmentManager.setFragmentResult(REQUEST_START_DATES, bundle)
             dismiss()
         }
 
-        return view
+        buttonCancel.setOnClickListener {
+            dismiss()
+        }
     }
 
     companion object {
