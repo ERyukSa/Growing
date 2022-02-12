@@ -5,7 +5,7 @@
     <string name="miracle_morning">미라클 모닝</string>
     <string name="settings">설정</string>>
     <string name="stamp">스탬프</string>
-    <string name="stamp_title">오늘의 미라클 모닝</string>
+    <string name="stamp_title">일어난 시간을 기록해주세요</string>
     <string name="confirm">확인</string>
     <string name="cancel">취소</string>
 
@@ -24,6 +24,7 @@
     <string name="goal_time_format">%1$s %2$d시 %3$d분</string>
     <string name="am">오전</string>
     <string name="pm">오후</string>
+    <string name="current_date_format">yyyy년 M월 %d일</string>
 
     <string name="preference_key">com.eryuksa.growing.SHARED_PREFERENCE</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.eryuksa.growing.fragment.miracle_morning.util
 
 import android.content.res.ColorStateList
+import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -49,17 +50,18 @@ fun setStamp(
     // 시작 날짜 이전이거나 오늘 이후 날짜는 빈 Stamp로 설정
     startDate!!.let {
         if (date.year < it.year || date.year > todayYear) {
-            imageView.setImageResource(android.R.color.transparent)
+            imageView.visibility = View.GONE
             return
         } else if (currentMonth < it.month || currentMonth > todayMonth) {
-            imageView.setImageResource(android.R.color.transparent)
+            imageView.visibility = View.GONE
             return
         } else if (date.date < it.date || date.date > todayDate) {
-            imageView.setImageResource(android.R.color.transparent)
+            imageView.visibility = View.GONE
             return
         }
     }
 
+    imageView.visibility = View.VISIBLE
     when {
         // 등록 x
         wakeUpMinutes == null -> {
@@ -70,16 +72,16 @@ fun setStamp(
 
         // 성공
         wakeUpMinutes <= goalMinutes!! -> {
-            imageView.setImageResource(R.drawable.round_verified_20)
+            imageView.setImageResource(R.drawable.baseline_sentiment_very_satisfied_24)
             imageView.imageTintList =
                 ColorStateList.valueOf(ContextCompat.getColor(imageView.context, R.color.green_stamp))
         }
 
         // 성공x
         else -> {
-            imageView.setImageResource(R.drawable.round_close_20)
+            imageView.setImageResource(R.drawable.baseline_sentiment_neutral_24)
             imageView.imageTintList =
-                ColorStateList.valueOf(ContextCompat.getColor(imageView.context, R.color.white))
+                ColorStateList.valueOf(ContextCompat.getColor(imageView.context, R.color.stamp_normal))
         }
     }
 }

@@ -10,19 +10,20 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/black_background"
+        android:background="@drawable/background_round_dialog"
         android:orientation="vertical"
         android:padding="16dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/settings"
             android:layout_marginStart="4dp"
-            android:textColor="@color/white"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="20dp"
+            android:text="@string/settings"
+            android:textColor="@color/dialog_title"
             android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="16dp" />
+            android:textStyle="bold" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/button_start_date"
@@ -31,9 +32,8 @@
             android:layout_marginBottom="16dp"
             android:background="@drawable/background_ripple"
             android:clickable="true"
-            android:elevation="2dp"
             android:focusable="true"
-            android:paddingVertical="4dp">
+            android:paddingVertical="8dp">
 
             <ImageView
                 android:id="@+id/image_start_date"
@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
                 android:text="@string/start_date"
-                android:textColor="@color/white"
+                android:textColor="@color/dialog_title"
                 android:textSize="14sp"
                 app:layout_constraintBottom_toTopOf="@id/text_start_date"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -75,69 +75,75 @@
             android:id="@+id/button_goal_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingVertical="4dp"
             android:layout_marginBottom="16dp"
-        android:background="@drawable/background_ripple"
-        android:clickable="true"
-        android:elevation="2dp"
-        android:focusable="true">
+            android:background="@drawable/background_ripple"
+            android:clickable="true"
+            android:focusable="true"
+            android:paddingVertical="8dp">
 
-        <ImageView
-            android:id="@+id/image_goal"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:padding="8dp"
-            android:src="@drawable/wakeup_24"
-            android:tint="@color/white"
-            app:layout_constraintBottom_toBottomOf="@id/text_goal"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/title_goal" />
+            <ImageView
+                android:id="@+id/image_goal"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:padding="8dp"
+                android:src="@drawable/wakeup"
+                android:tint="@color/image_normal"
+                app:layout_constraintBottom_toBottomOf="@id/text_goal"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/title_goal" />
 
-        <TextView
-            android:id="@+id/title_goal"
-            android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/title_goal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:text="@string/goal_minute"
+                android:textColor="@color/dialog_title"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toTopOf="@id/text_goal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.08"
+                app:layout_constraintStart_toEndOf="@id/image_goal"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/text_goal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/darker_gray"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@id/title_goal"
+                app:layout_constraintTop_toBottomOf="@id/title_goal"
+                tools:text="6시 30분" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:text="@string/goal_minute"
-            android:textColor="@color/white"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toTopOf="@id/text_goal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.08"
-            app:layout_constraintStart_toEndOf="@id/image_goal"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/text_goal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/darker_gray"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@id/title_goal"
-            app:layout_constraintTop_toBottomOf="@id/title_goal"
-            tools:text="6시 30분" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.appcompat.widget.AppCompatButton
+                style="@style/dialogButtonCancel"
+                android:id="@+id/button_cancel"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_marginHorizontal="12dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:layout_weight="1"
+                android:text="@string/cancel" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/button_cancel"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/cancel"
-            android:textColor="@color/white" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/button_ok"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/confirm"
-            android:textColor="@color/white" />
+            <androidx.appcompat.widget.AppCompatButton
+                style="@style/dialogButtonOk"
+                android:id="@+id/button_ok"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_marginHorizontal="12dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:layout_weight="1"
+                android:text="@string/confirm" />
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout></layout>
+</layout>

@@ -44,10 +44,6 @@ class MiracleMorningFragment : Fragment(), FragmentResultListener {
 
             setOnMenuItemClickListener {
                 when (it.itemId) {
-                    R.id.menu_stamp -> {
-                        StampDialogFragment().show(parentFragmentManager, StampDialogFragment.TAG)
-                    }
-
                     R.id.menu_setting -> {
                         SettingsDialogFragment.newInstance()
                             .show(parentFragmentManager, SettingsDialogFragment.TAG)

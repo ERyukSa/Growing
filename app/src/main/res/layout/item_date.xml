@@ -30,8 +30,6 @@
             android:id="@+id/image_stamp"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:src="@android:color/transparent"
-            android:tint="@color/green_stamp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

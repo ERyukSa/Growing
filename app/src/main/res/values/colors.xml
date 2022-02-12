@@ -6,14 +6,26 @@
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
-    <color name="black_background">#59000000</color>
+    <color name="blackOnSurface">#0f0f0f</color>
+    <color name="background">@color/white</color>
     <color name="grey_selected">#3C696969</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="gray_date">#66D4D4D4</color>
+    <color name="gray_date">#A9D4D4D4</color>
     <color name="red_sunday">#EF5350</color>
-    <color name="red_sunday_dim">#66F0524F</color>
+    <color name="red_sunday_dim">#8DF0524F</color>
     <color name="blue_saturday">#3F51B5</color>
-    <color name="blue_saturday_dim">#863F51B5</color>
+    <color name="blue_saturday_dim">#7C3F51B5</color>
     <color name="gold">#ffd700</color>
-    <color name="green_stamp">#00C853</color>
+
+    <color name="green_stamp">#CE00C853</color>
+    <color name="red_stamp">@color/red_sunday</color>
+    <color name="stamp_normal">#A9000000</color>
+
+    <color name="text">@color/blackOnSurface</color>
+    <color name="image_normal">@color/blackOnSurface</color>
+
+    <color name="dialog_background">@color/white</color>
+    <color name="dialog_title">@color/blackOnSurface</color>
+    <color name="button_cancel">#c4c4c4</color>
+    <color name="button_ok">#343434</color>
 </resources>

@@ -1,5 +1,7 @@
 package com.eryuksa.growing.fragment.miracle_morning.settings
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -27,6 +29,9 @@ class SettingsDialogFragment : DialogFragment(), FragmentResultListener {
 
     override fun onStart() {
         super.onStart()
+
+        // 다이얼로그 자체 화면의 백그라운드 설정
+        requireDialog().window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         val layoutParams = requireDialog().window?.attributes
         layoutParams?.apply {

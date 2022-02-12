@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.eryuksa.growing.data.MainViewModel" />
@@ -18,14 +19,18 @@
             android:id="@+id/fragment_container"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
+            app:itemTextColor="@drawable/bottom_icon_color"
+            app:itemIconTint="@drawable/bottom_icon_color"
+            android:background="@drawable/background_bottom_navigation"
+            app:elevation="8dp"
             app:menu="@menu/activity_main_bottom"
-            app:onItemSelectedListener="@{(menuItem) -> viewModel.setFragmentType(menuItem.itemId)}"/>
+            app:onItemSelectedListener="@{(menuItem) -> viewModel.setFragmentType(menuItem.itemId)}" />
     </LinearLayout>
 </layout>

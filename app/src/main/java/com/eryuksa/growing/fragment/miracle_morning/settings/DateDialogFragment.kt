@@ -1,12 +1,13 @@
 package com.eryuksa.growing.fragment.miracle_morning.settings
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.DatePicker
-import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import com.eryuksa.growing.R
 import com.eryuksa.growing.config.GrowingApplication
@@ -19,16 +20,15 @@ class DateDialogFragment : DialogFragment() {
 
     private val startDate: GrowingApplication.StartDate?
         get() = GrowingApplication.startDate
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
+    
     override fun onStart() {
         super.onStart()
 
+        // 다이얼로그의 자체 백그라운드 투명하게 설정
+        requireDialog().window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
         val layoutParams = requireDialog().window?.attributes
-        layoutParams?.width = (resources.displayMetrics.widthPixels * 0.9).toInt()
+        layoutParams?.width = (resources.displayMetrics.widthPixels * 0.85).toInt()
 
         requireDialog().window?.attributes = layoutParams
     }
@@ -38,9 +38,7 @@ class DateDialogFragment : DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_date_dialog, container, false)
-
-        view.findViewById<TextView>(R.id.text_title).text = getString(R.string.start_date)
+        val view = inflater.inflate(R.layout.fragment_start_date_dialog, container, false)
 
         datePicker = view.findViewById(R.id.date_picker)
         // date picker header 삭제

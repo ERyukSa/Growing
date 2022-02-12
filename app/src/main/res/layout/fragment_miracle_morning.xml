@@ -19,12 +19,12 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="@{viewModel.millisLiveData}"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:titleTextAppearance="@style/calendarTitleStyle"
-            app:menu="@menu/fragment_miracle_morning" />
+            app:menu="@menu/fragment_miracle_morning"
+            app:title="@{viewModel.millisLiveData}"
+            app:titleTextAppearance="@style/calendarTitleStyle" />
 
         <LinearLayout
             android:id="@+id/layout_day_title"
@@ -49,48 +49,43 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/monday"
-                android:textColor="@color/white" />
+                android:text="@string/monday" />
 
             <TextView
+                style="@style/dayTextStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/tuesday"
-                android:textColor="@color/white"
-                style="@style/dayTextStyle" />
+                android:text="@string/tuesday" />
 
             <TextView
+                style="@style/dayTextStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/wednesday"
-                android:textColor="@color/white"
-                style="@style/dayTextStyle" />
+                android:text="@string/wednesday" />
 
             <TextView
+                style="@style/dayTextStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/thursday"
-                android:textColor="@color/white"
-                style="@style/dayTextStyle" />
+                android:text="@string/thursday" />
 
             <TextView
+                style="@style/dayTextStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/friday"
-                android:textColor="@color/white"
-                style="@style/dayTextStyle" />
+                android:text="@string/friday" />
 
             <TextView
+                style="@style/dayTextStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/saturday"
-                android:textColor="@color/blue_saturday"
-                style="@style/dayTextStyle" />
+                android:textColor="@color/blue_saturday" />
         </LinearLayout>
 
         <androidx.viewpager2.widget.ViewPager2

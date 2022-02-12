@@ -32,7 +32,7 @@ class DateViewModel(private val context: Context, val calendar: Calendar) : Base
             val dayType = miracleDate?.dayType ?: DayType.WEEKDAY
 
             return if (monthType == MonthType.CURRENT && dayType == DayType.WEEKDAY) {
-                ContextCompat.getColor(context, R.color.white)
+                ContextCompat.getColor(context, R.color.text)
             } else if (monthType == MonthType.CURRENT && dayType == DayType.SATURDAY) {
                 ContextCompat.getColor(context, R.color.blue_saturday)
             } else if (monthType == MonthType.CURRENT && dayType == DayType.SUNDAY) {

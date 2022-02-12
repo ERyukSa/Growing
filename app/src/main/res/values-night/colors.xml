@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="background">#E6121212</color>
+    <color name="grey_selected">#3C696969</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="gray_date">#66D4D4D4</color>
+    <color name="red_sunday">#EF5350</color>
+    <color name="red_sunday_dim">#66F0524F</color>
+    <color name="blue_saturday">#3F51B5</color>
+    <color name="blue_saturday_dim">#863F51B5</color>
+    <color name="gold">#ffd700</color>
+
+    <color name="green_stamp">#00C853</color>
+    <color name="red_stamp">@color/red_sunday</color>
+    <color name="stamp_normal">@color/white</color>
+
+    <color name="text">@color/white</color>
+    <color name="image_normal">@color/white</color>
+
+    <color name="dialog_background">#2E2E2E</color>
+    <color name="dialog_title">@color/white</color>
+    <color name="button_cancel">@color/background</color>
+    <color name="button_ok">#c4c4c4</color>
+</resources>
