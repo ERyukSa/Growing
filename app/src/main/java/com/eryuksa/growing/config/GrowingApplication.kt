@@ -3,7 +3,7 @@ package com.eryuksa.growing.config
 import android.app.Application
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager.getDefaultSharedPreferences
-import com.eryuksa.growing.fragment.miracle_morning.database.CalendarRepository
+import com.eryuksa.growing.miracle_morning.data.CalendarRepository
 
 class GrowingApplication : Application() {
 

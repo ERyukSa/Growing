@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.eryuksa.growing.fragment.miracle_morning.data.view_model.MiracleMorningViewModel" />
+            type="com.eryuksa.growing.miracle_morning.MiracleMorningViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -23,7 +23,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:menu="@menu/fragment_miracle_morning"
-            app:title="@{viewModel.millisLiveData}"
+            app:title="@{viewModel.currentMonthMillis}"
             app:titleTextAppearance="@style/calendarTitleStyle" />
 
         <LinearLayout

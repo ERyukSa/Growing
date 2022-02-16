@@ -21,6 +21,6 @@
 
     <color name="dialog_background">#2E2E2E</color>
     <color name="dialog_title">@color/white</color>
-    <color name="button_cancel">@color/background</color>
-    <color name="button_ok">#c4c4c4</color>
+    <color name="button_cancel">#242424</color>
+    <color name="button_ok">#808080</color>
 </resources>

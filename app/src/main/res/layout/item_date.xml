@@ -7,7 +7,7 @@
 
         <variable
             name="dateViewModel"
-            type="com.eryuksa.growing.fragment.miracle_morning.calendar.DateViewModel" />
+            type="com.eryuksa.growing.miracle_morning.calendar.DateViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
