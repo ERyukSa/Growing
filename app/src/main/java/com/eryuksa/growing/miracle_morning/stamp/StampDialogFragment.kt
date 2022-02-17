@@ -12,7 +12,6 @@ import android.widget.TimePicker
 import androidx.fragment.app.DialogFragment
 import com.eryuksa.growing.R
 import com.eryuksa.growing.miracle_morning.calendar.ARG_MILLIS
-import com.eryuksa.growing.miracle_morning.calendar.MiracleCalendar
 import com.eryuksa.growing.miracle_morning.calendar.REQUEST_TODAY_STAMP
 import java.text.SimpleDateFormat
 import java.util.*
@@ -25,7 +24,8 @@ class StampDialogFragment : DialogFragment() {
 
     private var monthMillis: Long = 0
     private var mDayOfMonth = 1 // 일
-    private var mWakeUpMinute = -1
+    private var mWakeUpMinute: Int = -1
+    private var position = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +35,6 @@ class StampDialogFragment : DialogFragment() {
             mDayOfMonth = it.getInt(ARG_DATE, 1)
             mWakeUpMinute = it.getInt(ARG_MINUTE, -1)
         }
-
     }
 
     override fun onStart() {
@@ -52,7 +51,7 @@ class StampDialogFragment : DialogFragment() {
 
         // 스탬프가 찍히지 않았으면 지금 시간으로 설정
         if (mWakeUpMinute == -1) {
-            mWakeUpMinute = MiracleCalendar.currentDateTime.minuteOfDay
+            mWakeUpMinute = (System.currentTimeMillis() / 60000).toInt()
         }
 
     }
@@ -104,7 +103,7 @@ class StampDialogFragment : DialogFragment() {
         const val TAG = "StampDialog"
 
         const val ARG_DATE = "dayOfMonth"
-        private const val ARG_MINUTE = "minute"
+        const val ARG_MINUTE = "minute"
 
         const val RESULT_MINUTES = "minuteOfDay"
         const val RESULT_MILLIS = "millis"

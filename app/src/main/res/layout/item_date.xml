@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="dateViewModel"
             type="com.eryuksa.growing.miracle_morning.calendar.DateViewModel" />
@@ -27,6 +26,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
+            android:visibility="gone"
             android:id="@+id/image_stamp"
             android:layout_width="0dp"
             android:layout_height="0dp"

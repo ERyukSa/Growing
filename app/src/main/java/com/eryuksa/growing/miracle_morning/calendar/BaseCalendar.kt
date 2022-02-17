@@ -1,32 +1,24 @@
 package com.eryuksa.growing.miracle_morning.calendar
 
-import android.util.Log
 import com.eryuksa.growing.miracle_morning.calendar.model.DayType
 import com.eryuksa.growing.miracle_morning.calendar.model.MiracleDate
 import com.eryuksa.growing.miracle_morning.calendar.model.MonthType
-import org.joda.time.DateTime
 import java.util.*
-
-interface RefreshCalendarListener {
-    fun onRefresh(calendar: Calendar)
-}
-
 
 /**
  * 참조
  * Created by WoochanLee on 25/03/2019.
  * https://woochan-dev.tistory.com/27 [우찬쓰 개발블로그]
  */
-class MiracleCalendar(millis: Long) {
+class BaseCalendar(millis: Long) {
 
     companion object {
         const val DAYS_OF_WEEK = 7
-
-        val currentDateTime = DateTime()
     }
 
     val calendar: Calendar = Calendar.getInstance()
-    val preMonthMillis: Long
+
+    val prevMonthMillis: Long
     val nextMonthMillis: Long
 
     var prevMonthTailOffset = 0 // 첫 줄에 보여줄 저번달 날짜 개수
@@ -43,7 +35,7 @@ class MiracleCalendar(millis: Long) {
 
         // 이전 달 millis
         calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) - 1)
-        preMonthMillis = calendar.timeInMillis
+        prevMonthMillis = calendar.timeInMillis
 
         // 다음 달 millis
         calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) + 2)
@@ -56,7 +48,7 @@ class MiracleCalendar(millis: Long) {
     /**
      * make month date.
      */
-    fun makeMonthDate() {
+    private fun makeMonthDate() {
         dateList.clear()
 
         calendar.set(Calendar.DATE, 1)
@@ -82,7 +74,6 @@ class MiracleCalendar(millis: Long) {
         calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) - 1)
         val lastDate = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
         val firstDate = lastDate - prevMonthTailOffset + 1
-        Log.d("MiracleCalendar", "prevOffset: $prevMonthTailOffset, firstDate: $firstDate, lastDate: $lastDate")
 
         for (dateNumber in firstDate..lastDate) {
             dateList.add(MiracleDate(dateNumber, MonthType.PREV, getDayType(dateList.size)))
@@ -107,7 +98,9 @@ class MiracleCalendar(millis: Long) {
         }
     }
 
-    // 인덱스에 따라 평일, 토요일, 일요일 구분
+    /**
+     * 인덱스에 따라 평일, 토요일, 일요일 구분
+     */
     private fun getDayType(position: Int): DayType {
         return when(position % 7) {
             0 -> DayType.SUNDAY

@@ -3,7 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/drawable/round_done_20.xml" value="0.15" />
         <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/layout/activity_main.xml" value="0.11503623188405797" />
+        <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/layout/fragment_calendar.xml" value="0.11503623188405797" />
         <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/layout/fragment_miracle_morning.xml" value="0.1" />
         <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/layout/fragment_settings_dialog.xml" value="0.11503623188405797" />
         <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/layout/item_date.xml" value="0.1" />

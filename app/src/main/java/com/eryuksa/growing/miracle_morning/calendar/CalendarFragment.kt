@@ -1,5 +1,6 @@
 package com.eryuksa.growing.miracle_morning.calendar
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,16 +13,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.eryuksa.growing.R
 import com.eryuksa.growing.miracle_morning.stamp.StampDialogFragment
 
-private const val TAG = "CalendarFragment"
 const val REQUEST_TODAY_STAMP = "wakeUpTime"
 const val ARG_MILLIS = "millis"
 
-class CalendarFragment : Fragment(), FragmentResultListener, DoubleClickCallback {
+class CalendarFragment : Fragment(), FragmentResultListener,
+    CalendarDateAdapter.DoubleClickCallback {
 
     private lateinit var viewModel: CalendarViewModel
 
     private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: MiracleCalendarAdapter
+    private lateinit var adapter: CalendarDateAdapter
 
     private var millis = 0L
 
@@ -45,12 +46,7 @@ class CalendarFragment : Fragment(), FragmentResultListener, DoubleClickCallback
     ): View? {
         val view = inflater.inflate(R.layout.fragment_calendar, container, false)
 
-        recyclerView = view.findViewById(R.id.recycler_view)
-        adapter = MiracleCalendarAdapter(viewModel, this)
-
-        recyclerView.layoutManager =
-            GridLayoutManager(requireContext(), MiracleCalendar.DAYS_OF_WEEK)
-        recyclerView.adapter = adapter
+        setUpRecyclerView(view)
 
         parentFragmentManager
             .setFragmentResultListener(REQUEST_TODAY_STAMP, viewLifecycleOwner, this)
@@ -58,12 +54,22 @@ class CalendarFragment : Fragment(), FragmentResultListener, DoubleClickCallback
         return view
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 기상시간 등록, 변경했을 때 UI 업데이트
-        viewModel.updatedStamp.observe(viewLifecycleOwner) {
-            adapter.updateStamp(it)
+        // 클릭된 날짜에 selected 상태 적용
+        viewModel.selectedDatePos.observe(viewLifecycleOwner) {
+            adapter.notifyItemChanged(it)
+        }
+        // 이전 날짜의 selected 상태 해제
+        viewModel.prevSelectedPos.observe(viewLifecycleOwner) {
+            adapter.notifyItemChanged(it)
+        }
+
+        // 기상시간 변경했을 때 UI 업데이트
+        viewModel.updatedPos.observe(viewLifecycleOwner) {
+            adapter.notifyItemChanged(it)
         }
 
         // Room에서 스탬프 객체 로딩 완료
@@ -76,6 +82,25 @@ class CalendarFragment : Fragment(), FragmentResultListener, DoubleClickCallback
         viewModel.onFragmentResult(requestKey, result)
     }
 
+    private fun setUpRecyclerView(view: View) {
+        recyclerView = view.findViewById(R.id.recycler_view)
+        adapter = CalendarDateAdapter(viewModel, this)
+
+        recyclerView.layoutManager =
+            GridLayoutManager(requireContext(), BaseCalendar.DAYS_OF_WEEK)
+        recyclerView.adapter = adapter
+    }
+
+    /**
+     * 달력 아이템 더블 클릭했을 때 동작 설정
+     */
+    override fun onItemDoubleClick(clickedMillis: Long, dayOfMonth: Int, wakeUpMinutes: Int?) {
+        StampDialogFragment.newInstance(clickedMillis, dayOfMonth, wakeUpMinutes ?: -1).show(
+            this.parentFragmentManager,
+            StampDialogFragment.TAG
+        )
+    }
+
     companion object {
         fun newInstance(millis: Long): CalendarFragment {
             val bundle = Bundle().apply {
@@ -86,15 +111,5 @@ class CalendarFragment : Fragment(), FragmentResultListener, DoubleClickCallback
                 arguments = bundle
             }
         }
-    }
-
-    /**
-     * 달력 아이템 더블 클릭했을 때 동작 설정
-     */
-    override fun onItemDoubleClicked(clickedMillis: Long, dayOfMonth: Int, wakeUpMinutes: Int?) {
-        StampDialogFragment.newInstance(clickedMillis, dayOfMonth, wakeUpMinutes ?: -1).show(
-            this.parentFragmentManager,
-            StampDialogFragment.TAG
-        )
     }
 }
