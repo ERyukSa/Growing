@@ -1,59 +1,41 @@
 package com.eryuksa.growing.miracle_morning.calendar
 
-import android.content.Context
-import androidx.core.content.ContextCompat
-import androidx.databinding.BaseObservable
-import androidx.databinding.Bindable
+import androidx.annotation.ColorRes
 import androidx.lifecycle.MutableLiveData
 import com.eryuksa.growing.R
-import com.eryuksa.growing.config.GrowingApplication
-import com.eryuksa.growing.miracle_morning.calendar.model.DayType
-import com.eryuksa.growing.miracle_morning.calendar.model.MiracleDate
-import com.eryuksa.growing.miracle_morning.calendar.model.MonthType
-import java.util.*
+import com.eryuksa.growing.miracle_morning.model.MiracleDate
+import org.joda.time.DateTime
 
-class DateViewModel(private val context: Context, val calendar: Calendar) : BaseObservable() {
+class DateViewModel(private val miracleDate: MiracleDate, private val displayMonthDate: DateTime) {
 
-    var miracleDate: MiracleDate? = null
-        set(miracleDate) {
-            field = miracleDate
-            currentDate.date = miracleDate?.dayOfMonth ?: 1
-            notifyChange()
-        }
+    val dateText: String
+        get() = miracleDate.dateTime.dayOfMonth.toString()
 
-    @get:Bindable
-    val dateForText: String
-        get() = miracleDate?.dayOfMonth.toString()
-
-    @get:Bindable
+    // 바인딩어댑터에서 사용
     val dateColor: Int
-        get() {
-            val monthType = miracleDate?.monthType ?: MonthType.CURRENT
-            val dayType = miracleDate?.dayType ?: DayType.WEEKDAY
+        @ColorRes get() {
+            val currentMonthDate = miracleDate.dateTime.withDayOfMonth(1)
 
-            return if (monthType == MonthType.CURRENT && dayType == DayType.WEEKDAY) {
-                ContextCompat.getColor(context, R.color.text)
-            } else if (monthType == MonthType.CURRENT && dayType == DayType.SATURDAY) {
-                ContextCompat.getColor(context, R.color.blue_saturday)
-            } else if (monthType == MonthType.CURRENT && dayType == DayType.SUNDAY) {
-                ContextCompat.getColor(context, R.color.red_sunday)
-            } else if (monthType != MonthType.CURRENT && dayType == DayType.SATURDAY) {
-                ContextCompat.getColor(context, R.color.blue_saturday_dim)
-            } else if (monthType != MonthType.CURRENT && dayType == DayType.SUNDAY) {
-                ContextCompat.getColor(context, R.color.red_sunday_dim)
-            } else {
-                ContextCompat.getColor(context, R.color.gray_date)
+            // 보여주는 달의 날짜일 때
+            return if (currentMonthDate.isEqual(displayMonthDate)) {
+                when (miracleDate.dateTime.dayOfWeek) {
+                    7 -> R.color.red_sunday
+                    6 -> R.color.blue_saturday
+                    else -> R.color.text
+                }
+            } else { // 이전 or 다음 달의 날짜일 때
+                when (miracleDate.dateTime.dayOfWeek) {
+                    7 -> R.color.red_sunday_dim
+                    6 -> R.color.blue_saturday_dim
+                    else -> R.color.gray_date
+                }
             }
-
         }
 
-    val wakeUpStamp: MutableLiveData<Int?>?
-        get() = miracleDate?.wakeUpMinutes
+    val wakeUpMinutes: MutableLiveData<Int?>
+        get() = miracleDate.wakeUpMinutes
 
-    // 사용자가 설정한 시작 날짜와 비교할 객체 -> 시작 날짜 이전에는 스탬프를 보여주지 않기 위함
-    val currentDate: GrowingApplication.StartDate = GrowingApplication.StartDate(
-        calendar.get(Calendar.YEAR),
-        calendar.get(Calendar.MONTH) + 1,
-        miracleDate?.dayOfMonth ?: 1
-    )
+    // 사용자가 설정한 시작 날짜 비교할 현재 날짜 -> 바인딩어댑터에서 사용
+    val currentDateTime: DateTime
+        get() = miracleDate.dateTime
 }

@@ -8,9 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.DatePicker
+import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import com.eryuksa.growing.R
 import com.eryuksa.growing.config.GrowingApplication
+import java.util.*
 
 class DateDialogFragment : DialogFragment() {
 
@@ -18,9 +20,17 @@ class DateDialogFragment : DialogFragment() {
     private lateinit var buttonOk: Button
     private lateinit var buttonCancel: Button
 
-    private val startDate: GrowingApplication.StartDate?
-        get() = GrowingApplication.startDate
-    
+    private val calendar: Calendar = Calendar.getInstance()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // 처음 보여줄 날짜 - 세팅되어 있으면 그 날을, 처음이면 오늘을
+        GrowingApplication.startDateInMillis?.let {
+            calendar.timeInMillis = it
+        }
+    }
+
     override fun onStart() {
         super.onStart()
 
@@ -41,11 +51,7 @@ class DateDialogFragment : DialogFragment() {
         val view = inflater.inflate(R.layout.fragment_start_date_dialog, container, false)
 
         datePicker = view.findViewById(R.id.date_picker)
-        // date picker header 삭제
-        val pickerHeaderId = datePicker.getChildAt(0)
-            .resources.getIdentifier("date_picker_header", "id", "android")
-        datePicker.findViewById<View>(pickerHeaderId).visibility = View.GONE
-
+        setUpDatePicker()
 
         buttonOk = view.findViewById(R.id.button_ok)
         buttonCancel = view.findViewById(R.id.button_cancel)
@@ -56,22 +62,8 @@ class DateDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 이전과 달라졌을 때만 결과 전달
         buttonOk.setOnClickListener {
-            if (startDate?.year != datePicker.year ||
-                startDate?.month != datePicker.month ||
-                startDate?.date != datePicker.dayOfMonth
-            ) {
-
-                val bundle = Bundle().apply {
-                    putInt(RESULT_YEAR, datePicker.year)
-                    putInt(RESULT_MONTH, datePicker.month + 1)
-                    putInt(RESULT_DATE, datePicker.dayOfMonth)
-                }
-
-                parentFragmentManager.setFragmentResult(REQUEST_START_DATES, bundle)
-            }
-
+            sendChangedDate() // 이전과 달라졌을 때만 결과 전달
             dismiss()
         }
 
@@ -80,12 +72,43 @@ class DateDialogFragment : DialogFragment() {
         }
     }
 
+    private fun setUpDatePicker() {
+        datePicker.updateDate(
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DATE)
+        )
+        removePickerHeader() // date picker header 삭제
+    }
+
+    private fun removePickerHeader() {
+        val pickerHeaderId = datePicker.getChildAt(0)
+            .resources.getIdentifier("date_picker_header", "id", "android")
+        datePicker.findViewById<View>(pickerHeaderId).visibility = View.GONE
+    }
+
+    /**
+     * SettingDialogFragment에 변경된 시작 날짜를 전달,
+     * 이전과 바뀌었을 때만 전달한다
+     */
+    private fun sendChangedDate(){
+        val timeInMillis = calendar.apply {
+            set(Calendar.YEAR, datePicker.year)
+            set(Calendar.MONTH, datePicker.month)
+            set(Calendar.DAY_OF_MONTH, datePicker.dayOfMonth)
+        }.timeInMillis
+
+        // 변경됐다면
+        if (GrowingApplication.startDateInMillis != timeInMillis) {
+            val bundle = bundleOf(RESULT_MILLIS to timeInMillis)
+            parentFragmentManager.setFragmentResult(REQUEST_START_DATES, bundle)
+        }
+    }
+
     companion object {
         const val TAG = "DateDialogFragment"
 
-        const val RESULT_YEAR = "year"
-        const val RESULT_MONTH = "month"
-        const val RESULT_DATE = "date"
+        const val RESULT_MILLIS = "millis"
 
         fun newInstance(): DateDialogFragment {
             return DateDialogFragment()

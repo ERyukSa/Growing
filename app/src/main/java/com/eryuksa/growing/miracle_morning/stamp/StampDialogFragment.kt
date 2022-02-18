@@ -13,26 +13,24 @@ import androidx.fragment.app.DialogFragment
 import com.eryuksa.growing.R
 import com.eryuksa.growing.miracle_morning.calendar.ARG_MILLIS
 import com.eryuksa.growing.miracle_morning.calendar.REQUEST_TODAY_STAMP
-import java.text.SimpleDateFormat
-import java.util.*
+import com.eryuksa.growing.miracle_morning.model.MiracleDate
+import org.joda.time.format.DateTimeFormat
 
 class StampDialogFragment : DialogFragment() {
 
+    private lateinit var dateTextView: TextView
     private lateinit var timePicker: TimePicker
     private lateinit var buttonOk: Button
     private lateinit var buttonCancel: Button
 
-    private var monthMillis: Long = 0
-    private var mDayOfMonth = 1 // 일
+    private var dateMillis: Long = 0
     private var mWakeUpMinute: Int = -1
-    private var position = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         arguments?.let {
-            monthMillis = it.getLong(ARG_MILLIS, System.currentTimeMillis())
-            mDayOfMonth = it.getInt(ARG_DATE, 1)
+            dateMillis = it.getLong(ARG_MILLIS, System.currentTimeMillis())
             mWakeUpMinute = it.getInt(ARG_MINUTE, -1)
         }
     }
@@ -63,21 +61,26 @@ class StampDialogFragment : DialogFragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_stamp_dialog, container, false)
 
-        val currentDateText = view.findViewById<TextView>(R.id.text_current_date)
-        setCurrentDateText(currentDateText)
+        dateTextView = view.findViewById(R.id.text_current_date)
+        timePicker = view.findViewById(R.id.time_picker)
+        buttonOk = view.findViewById(R.id.button_ok)
+        buttonCancel = view.findViewById(R.id.button_cancel)
 
-        timePicker = view.findViewById<TimePicker>(R.id.time_picker).apply {
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        initDateText()
+
+        timePicker.apply {
             this.hour = mWakeUpMinute / 60
             this.minute = mWakeUpMinute % 60
         }
 
-        buttonOk = view.findViewById(R.id.button_ok)
-        buttonCancel = view.findViewById(R.id.button_cancel)
-
         buttonOk.setOnClickListener {
             val bundle = Bundle().apply {
-                putLong(RESULT_MILLIS, monthMillis)  // 월
-                putInt(RESULT_DATE, mDayOfMonth )    // 일
                 putInt(RESULT_MINUTES, timePicker.hour * 60 + timePicker.minute) // 분
             }
 
@@ -88,32 +91,25 @@ class StampDialogFragment : DialogFragment() {
         buttonCancel.setOnClickListener {
             dismiss()
         }
-
-        return view
     }
 
     // 클릭된 날짜 텍스트 설정
-    private fun setCurrentDateText(textView: TextView) {
-        val formatter =
-            SimpleDateFormat(requireContext().getString(R.string.current_date_format, mDayOfMonth), Locale.KOREA)
-        textView.text = formatter.format(Date(monthMillis))
+    private fun initDateText() {
+        dateTextView.text =
+            DateTimeFormat.forPattern(getString(R.string.date_format)).print(dateMillis)
     }
 
     companion object {
         const val TAG = "StampDialog"
 
-        const val ARG_DATE = "dayOfMonth"
         const val ARG_MINUTE = "minute"
 
         const val RESULT_MINUTES = "minuteOfDay"
-        const val RESULT_MILLIS = "millis"
-        const val RESULT_DATE = "dayOfMonth"
 
-        fun newInstance(millis: Long, dayOfMonth: Int, wakeUpMinutes: Int): StampDialogFragment {
+        fun newInstance(miracleDate: MiracleDate): StampDialogFragment {
             val bundle = Bundle().apply {
-                putLong(ARG_MILLIS, millis)
-                putInt(ARG_DATE, dayOfMonth)
-                putInt(ARG_MINUTE, wakeUpMinutes)
+                putLong(ARG_MILLIS, miracleDate.dateTime.millis)
+                putInt(ARG_MINUTE, miracleDate.wakeUpMinutes.value ?: -1)
             }
 
             return StampDialogFragment().apply {

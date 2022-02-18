@@ -11,6 +11,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.eryuksa.growing.R
+import com.eryuksa.growing.miracle_morning.calendar.data.BaseCalendar
+import com.eryuksa.growing.miracle_morning.model.MiracleDate
 import com.eryuksa.growing.miracle_morning.stamp.StampDialogFragment
 
 const val REQUEST_TODAY_STAMP = "wakeUpTime"
@@ -94,8 +96,8 @@ class CalendarFragment : Fragment(), FragmentResultListener,
     /**
      * 달력 아이템 더블 클릭했을 때 동작 설정
      */
-    override fun onItemDoubleClick(clickedMillis: Long, dayOfMonth: Int, wakeUpMinutes: Int?) {
-        StampDialogFragment.newInstance(clickedMillis, dayOfMonth, wakeUpMinutes ?: -1).show(
+    override fun onItemDoubleClick(miracleDate: MiracleDate) {
+        StampDialogFragment.newInstance(miracleDate).show(
             this.parentFragmentManager,
             StampDialogFragment.TAG
         )

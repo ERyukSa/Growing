@@ -1,4 +1,4 @@
-package com.eryuksa.growing.miracle_morning.calendar.model
+package com.eryuksa.growing.miracle_morning.model
 
 import androidx.room.Entity
 

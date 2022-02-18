@@ -1,17 +1,17 @@
 package com.eryuksa.growing.miracle_morning.calendar
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.*
-import com.eryuksa.growing.miracle_morning.calendar.model.MiracleStamp
-import com.eryuksa.growing.miracle_morning.data.CalendarRepository
+import com.eryuksa.growing.miracle_morning.calendar.data.BaseCalendar
+import com.eryuksa.growing.miracle_morning.calendar.data.CalendarRepository
+import com.eryuksa.growing.miracle_morning.model.MiracleDate
+import com.eryuksa.growing.miracle_morning.model.MiracleStamp
 import com.eryuksa.growing.miracle_morning.stamp.StampDialogFragment
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import org.joda.time.DateTime
-import java.util.*
 import kotlin.math.ceil
 
 class CalendarViewModel(_monthMillis: Long) : ViewModel(), DefaultLifecycleObserver {
@@ -20,14 +20,13 @@ class CalendarViewModel(_monthMillis: Long) : ViewModel(), DefaultLifecycleObser
 
     private val baseCalendar: BaseCalendar = BaseCalendar(_monthMillis)
 
-    val dateList
-        get() = baseCalendar.dateList
-    val calendar
-        get() = baseCalendar.calendar
+    val miracleDateList = mutableListOf<MiracleDate>()
+    private val dateTimeList
+        get() = baseCalendar.dateTimeList
 
-    val monthMillis = _monthMillis
-    val prevMonthMillis get() = baseCalendar.prevMonthMillis
-    val nextMonthMillis get() = baseCalendar.nextMonthMillis
+    val currentDateTime get()= baseCalendar.currentDateTime
+    private val prevDateTime get() = baseCalendar.prevDateTime
+    private val nextDateTime get() = baseCalendar.nextDateTime
 
     private val updatedStampList: MutableList<MiracleStamp> = mutableListOf()
 
@@ -46,6 +45,8 @@ class CalendarViewModel(_monthMillis: Long) : ViewModel(), DefaultLifecycleObser
     val prevSelectedPos get() = _prevSelectedPos
 
     init {
+        initMiracleDateList()
+
         // 기상 시간을 담고 있는 스탬프 객체들을 Room에서 가져온다
         viewModelScope.launch {
             loadStamps()
@@ -53,11 +54,17 @@ class CalendarViewModel(_monthMillis: Long) : ViewModel(), DefaultLifecycleObser
         }
     }
 
+    private fun initMiracleDateList() {
+        dateTimeList.forEach {
+            miracleDateList.add(MiracleDate(it))
+        }
+    }
+
     /**
      * 캘린더의 라인 개수에 따라 아이템 뷰 높이 설정
      */
    fun setItemViewHeight(itemView: View, parent: ViewGroup) {
-        val lengthOfRow = ceil(dateList.size.toDouble() / BaseCalendar.DAYS_OF_WEEK).toInt()
+        val lengthOfRow = ceil(dateTimeList.size.toDouble() / BaseCalendar.DAYS_OF_WEEK).toInt()
         itemView.layoutParams.height = parent.height / lengthOfRow
     }
 
@@ -65,8 +72,8 @@ class CalendarViewModel(_monthMillis: Long) : ViewModel(), DefaultLifecycleObser
      * 이번 달이면 오늘 날짜를, 아니면 1일의 DateHolder를 select
      */
     private fun initSelectedPos(): Int {
-        return if (baseCalendar.calendar.get(Calendar.MONTH) == currentDateTime.monthOfYear - 1) {
-            baseCalendar.prevMonthTailOffset + currentDateTime.dayOfMonth - 1
+        return if (baseCalendar.currentDateTime.monthOfYear == todayDateTime.monthOfYear) {
+            baseCalendar.prevMonthTailOffset + todayDateTime.dayOfMonth - 1
         } else {
             baseCalendar.prevMonthTailOffset
         }
@@ -83,9 +90,9 @@ class CalendarViewModel(_monthMillis: Long) : ViewModel(), DefaultLifecycleObser
     }
 
     private suspend fun loadStamps() {
-        val preStartDay = baseCalendar.dateList[0].dayOfMonth
+        val preStartDay = baseCalendar.dateTimeList[0].dayOfMonth
         val preEndDay = preStartDay + baseCalendar.prevMonthTailOffset - 1
-        val nextEndDay = baseCalendar.dateList.last().dayOfMonth
+        val nextEndDay = baseCalendar.dateTimeList.last().dayOfMonth
 
         val job1 = viewModelScope.launch {
             loadPrevMonthStamps(preStartDay, preEndDay)
@@ -104,34 +111,30 @@ class CalendarViewModel(_monthMillis: Long) : ViewModel(), DefaultLifecycleObser
 
     private suspend fun loadPrevMonthStamps(startDay: Int, endDay: Int) {
         val preMonthStamps =
-            calendarRepository.getStamps(prevMonthMillis, startDay, endDay)
+            calendarRepository.getStamps(prevDateTime.millis, startDay, endDay)
 
         preMonthStamps.forEach { stamp ->
-            Log.d("CalendarViewModel", "prevStamp: $stamp")
-            val pos = stamp.dayOfMonth - dateList[0].dayOfMonth
-            dateList[pos].wakeUpMinutes.value = stamp.wakeUpMinutes
+            val pos = stamp.dayOfMonth - dateTimeList[0].dayOfMonth
+            miracleDateList[pos].wakeUpMinutes.value = stamp.wakeUpMinutes
         }
     }
 
     private suspend fun loadCurrentMonthStamps() {
-        val stamps = calendarRepository.getMonthStamps(monthMillis)
+        val stamps = calendarRepository.getMonthStamps(currentDateTime.millis)
 
         stamps.forEach { stamp ->
-            Log.d("CalendarViewModel", "currentStamp: $stamp")
             val pos = baseCalendar.prevMonthTailOffset + stamp.dayOfMonth - 1
-            dateList[pos].wakeUpMinutes.value = stamp.wakeUpMinutes
-            Log.d("CalendarViewModel", "pos: $pos, ${dateList[pos].wakeUpMinutes.value}")
+            miracleDateList[pos].wakeUpMinutes.value = stamp.wakeUpMinutes
         }
     }
 
     private suspend fun loadNextMonthStamps(endDay: Int) {
-        val nextMonthStamps = calendarRepository.getStamps(nextMonthMillis, 1, endDay)
+        val nextMonthStamps = calendarRepository.getStamps(nextDateTime.millis, 1, endDay)
 
         nextMonthStamps.forEach { stamp ->
-            Log.d("CalendarViewModel", "nextStamp: $stamp")
             val pos =
-                (dateList.size - baseCalendar.nextMonthHeadOffset) + stamp.dayOfMonth - 1
-            dateList[pos].wakeUpMinutes.value = stamp.wakeUpMinutes
+                (dateTimeList.size - baseCalendar.nextMonthHeadOffset) + stamp.dayOfMonth - 1
+            miracleDateList[pos].wakeUpMinutes.value = stamp.wakeUpMinutes
         }
     }
 
@@ -150,22 +153,26 @@ class CalendarViewModel(_monthMillis: Long) : ViewModel(), DefaultLifecycleObser
 
         // 스탬프 다이얼로그에서 기상 시간이 기록됐을 때
         if (requestKey == REQUEST_TODAY_STAMP) {
-            val monthMillis = result.getLong(StampDialogFragment.RESULT_MILLIS)
-            val dayOfMonth = result.getInt(StampDialogFragment.RESULT_DATE)
             val minutesOfDay = result.getInt(StampDialogFragment.RESULT_MINUTES)
 
             // 캘린더 UI 업데이트
             updateItemUI(minutesOfDay)
 
             // 업데이트된 리스트에 추가
-            updatedStampList.add(MiracleStamp(monthMillis, dayOfMonth, minutesOfDay))
+            selectedDatePos.value?.let {
+                val monthMillis = dateTimeList[it].withDayOfMonth(1).millis
+                val dayOfMonth = dateTimeList[it].dayOfMonth
+                updatedStampList.add(MiracleStamp(monthMillis, dayOfMonth, minutesOfDay))
+            }
         }
     }
 
-    // 변경된 스탬프의 DateHolder UI 업데이트
+    /**
+     * 변경된 스탬프의 DateHolder UI 업데이트
+     */
     private fun updateItemUI(wakeUpMinutes: Int) {
         selectedDatePos.value?.let {
-            dateList[it].wakeUpMinutes.value = wakeUpMinutes
+            miracleDateList[it].wakeUpMinutes.value = wakeUpMinutes
         }
 
         _updatedPos.value = selectedDatePos.value
@@ -178,6 +185,6 @@ class CalendarViewModel(_monthMillis: Long) : ViewModel(), DefaultLifecycleObser
     }
 
     companion object {
-        private val currentDateTime = DateTime()
+        val todayDateTime = DateTime()
     }
 }

@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentResultListener
 import com.eryuksa.growing.R
 import com.eryuksa.growing.config.GrowingApplication
 import com.eryuksa.growing.databinding.FragmentSettingsDialogBinding
+import org.joda.time.format.DateTimeFormat
 
 const val REQUEST_START_DATES = "startDate"
 const val REQUEST_GOAL_MINUTE = "gaolMinute"
@@ -21,8 +22,8 @@ class SettingsDialogFragment : DialogFragment(), FragmentResultListener {
 
     private lateinit var binding: FragmentSettingsDialogBinding
 
-    private val startDate: GrowingApplication.StartDate?
-        get() = GrowingApplication.startDate
+    private val startDateInMillis: Long?
+        get() = GrowingApplication.startDateInMillis
 
     private var isDateChanged = false
     private var isTimeChanged = false
@@ -46,11 +47,11 @@ class SettingsDialogFragment : DialogFragment(), FragmentResultListener {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_settings_dialog, container, false)
 
-        startDate?.let{
+        startDateInMillis?.let{
             initStateDatesText() // 시작 날짜 텍스트 초기회
         }
 
@@ -102,16 +103,8 @@ class SettingsDialogFragment : DialogFragment(), FragmentResultListener {
     override fun onFragmentResult(requestKey: String, result: Bundle) {
         when (requestKey) {
             REQUEST_START_DATES -> {
-                if (startDate == null) {
-                    GrowingApplication.startDate =
-                        GrowingApplication.StartDate(0, 0, 0)
-                }
-
-                startDate!!.apply{
-                    year = result.getInt(DateDialogFragment.RESULT_YEAR)
-                    month = result.getInt(DateDialogFragment.RESULT_MONTH)
-                    date = result.getInt(DateDialogFragment.RESULT_DATE)
-                }
+                GrowingApplication.startDateInMillis =
+                    result.getLong(DateDialogFragment.RESULT_MILLIS)
 
                 initStateDatesText() // 바뀐 날짜로 텍스트 초기화
                 isDateChanged = true
@@ -130,9 +123,9 @@ class SettingsDialogFragment : DialogFragment(), FragmentResultListener {
      * 미라클 모닝 시작 날짜 텍스트 설정
      */
     private fun initStateDatesText() {
-        startDate?.let {
+        startDateInMillis?.let {
             binding.textStartDate.text =
-                getString(R.string.start_date_format, it.year, it.month, it.date)
+                DateTimeFormat.forPattern(getString(R.string.date_format)).print(it)
         }
     }
 
@@ -158,12 +151,10 @@ class SettingsDialogFragment : DialogFragment(), FragmentResultListener {
      * 바뀐 시작 날짜를 프리퍼런스에 저장
      */
     private fun saveStartDate() {
-        startDate?.let {
+        startDateInMillis?.let {
             GrowingApplication.sSharedPreferences
                 .edit()
-                .putInt(GrowingApplication.START_YEAR, it.year)
-                .putInt(GrowingApplication.START_MONTH, it.month)
-                .putInt(GrowingApplication.START_DATE, it.date)
+                .putLong(GrowingApplication.START_DATE, it)
                 .apply()
         }
     }

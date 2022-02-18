@@ -5,9 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.eryuksa.growing.databinding.ItemDateBinding
-import com.eryuksa.growing.miracle_morning.calendar.model.MiracleDate
-import com.eryuksa.growing.miracle_morning.calendar.model.MonthType
-
+import com.eryuksa.growing.miracle_morning.model.MiracleDate
 
 class CalendarDateAdapter(
     private val calendarViewModel: CalendarViewModel,
@@ -15,10 +13,17 @@ class CalendarDateAdapter(
 ) :
     RecyclerView.Adapter<CalendarDateAdapter.DateHolder>() {
 
+    /**
+     * 달력 날짜를 더블 클릭했을 때 프래그먼트에서 할 동작
+     */
+    interface DoubleClickCallback {
+        fun onItemDoubleClick(miracleDate: MiracleDate)
+    }
+
     private val onDoubleClick = doubleClickCallback::onItemDoubleClick
 
-    private val dateList
-        get() = calendarViewModel.dateList
+    private val miracleDateList
+        get() = calendarViewModel.miracleDateList
 
     inner class DateHolder(private val binding: ItemDateBinding) :
         RecyclerView.ViewHolder(binding.root), View.OnClickListener {
@@ -26,13 +31,14 @@ class CalendarDateAdapter(
         private lateinit var miracleDate: MiracleDate
 
         init {
-            binding.dateViewModel = DateViewModel(itemView.context, calendarViewModel.calendar)
             itemView.setOnClickListener(this)
         }
 
         fun bind(pos: Int) {
-            miracleDate = dateList[pos]
-            binding.dateViewModel?.miracleDate = miracleDate
+            miracleDate = miracleDateList[pos]
+            binding.viewModel = DateViewModel(miracleDate, calendarViewModel.currentDateTime)
+
+            if (adapterPosition == RecyclerView.NO_POSITION) return
 
             itemView.isSelected = pos == calendarViewModel.selectedDatePos.value
         }
@@ -42,13 +48,7 @@ class CalendarDateAdapter(
 
             // selected 상태에서 한번 더 클릭했을 때
             if (calendarViewModel.selectedDatePos.value == adapterPosition) {
-                val monthMillis = when (miracleDate.monthType) {
-                    MonthType.PREV -> calendarViewModel.prevMonthMillis
-                    MonthType.CURRENT -> calendarViewModel.monthMillis
-                    MonthType.NEXT -> calendarViewModel.nextMonthMillis
-                }
-
-                onDoubleClick(monthMillis, miracleDate.dayOfMonth, miracleDate.wakeUpMinutes.value)
+                onDoubleClick(miracleDate)
             } else {
                 calendarViewModel.changeSelectedPos(adapterPosition)
             }
@@ -72,14 +72,7 @@ class CalendarDateAdapter(
         holder.bind(position)
     }
 
-    override fun getItemCount(): Int {
-        return dateList.size
-    }
+    override fun getItemCount(): Int =
+        miracleDateList.size
 
-    /**
-     * 달력 날짜를 더블 클릭했을 때 프래그먼트에서 할 동작
-     */
-    interface DoubleClickCallback {
-        fun onItemDoubleClick(clickedMillis: Long, dayOfMonth: Int, wakeUpMinutes: Int?)
-    }
 }

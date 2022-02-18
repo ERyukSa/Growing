@@ -20,11 +20,10 @@
 
     <string name="start_date">시작 날짜</string>
     <string name="goal_minute">목표 시간</string>
-    <string name="start_date_format">%1$d년 %2$d월 %3$d일</string>
     <string name="goal_time_format">%1$s %2$d시 %3$d분</string>
     <string name="am">오전</string>
     <string name="pm">오후</string>
-    <string name="current_date_format">yyyy년 M월 %d일</string>
+    <string name="date_format">yyyy년 M월 d일</string>
 
     <string name="preference_key">com.eryuksa.growing.SHARED_PREFERENCE</string>
 </resources>
