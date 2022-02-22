@@ -12,6 +12,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import com.eryuksa.growing.R
 import com.eryuksa.growing.config.GrowingApplication
+import org.joda.time.DateTime
 import java.util.*
 
 class DateDialogFragment : DialogFragment() {
@@ -92,11 +93,9 @@ class DateDialogFragment : DialogFragment() {
      * 이전과 바뀌었을 때만 전달한다
      */
     private fun sendChangedDate(){
-        val timeInMillis = calendar.apply {
-            set(Calendar.YEAR, datePicker.year)
-            set(Calendar.MONTH, datePicker.month)
-            set(Calendar.DAY_OF_MONTH, datePicker.dayOfMonth)
-        }.timeInMillis
+        val timeInMillis = with(datePicker) {
+            DateTime(year, month+1, dayOfMonth, 0, 0).millis
+        }
 
         // 변경됐다면
         if (GrowingApplication.startDateInMillis != timeInMillis) {

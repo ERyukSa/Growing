@@ -1,6 +1,7 @@
 package com.eryuksa.growing.miracle_morning.calendar
 
 import android.content.res.ColorStateList
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -12,7 +13,7 @@ import com.eryuksa.growing.config.GrowingApplication
 import org.joda.time.DateTime
 
 private val goalMinutes get() = GrowingApplication.goalMinutes
-private val startDate get() = GrowingApplication.startDateInMillis
+private val startDateInMillis get() = GrowingApplication.startDateInMillis
 
 @BindingAdapter("android:textColor")
 fun setDateTextColor(textView: TextView, @ColorRes id: Int) {
@@ -26,10 +27,11 @@ fun setStamp(
     currentDateTime: DateTime
 ) {
     // 설정이 아직 안돼있을 때
-    if (goalMinutes == null || startDate == null) return
+    if (goalMinutes == null || startDateInMillis == null) return
 
     // 시작 날짜 이전이거나 오늘 이후 날짜는 빈 Stamp로 설정
-    if (currentDateTime.isBefore(startDate!!) || currentDateTime.isAfterNow) {
+    Log.d("setStamp", "currentDate: $currentDateTime, isBefore: ${currentDateTime.isBefore(startDateInMillis!!)}")
+    if (currentDateTime.isBefore(startDateInMillis!!) || currentDateTime.isAfterNow) {
         imageView.visibility = View.GONE
         return
     }
