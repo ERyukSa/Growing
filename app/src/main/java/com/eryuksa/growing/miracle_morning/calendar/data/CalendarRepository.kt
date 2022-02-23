@@ -5,8 +5,8 @@ import androidx.room.Room
 import com.eryuksa.growing.miracle_morning.model.MiracleStamp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 private const val CALENDAR_DB_NAME = "MiracleCalendarDB"
 
@@ -22,18 +22,16 @@ class CalendarRepository private constructor(context: Context) {
 
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
-
-
     suspend fun getMonthStamps(monthMillis: Long): List<MiracleStamp> {
-        return coroutineScope.async {
-            return@async calendarDao.getMonthStamps(monthMillis)
-        }.await()
+        return  withContext(coroutineScope.coroutineContext) {
+            return@withContext calendarDao.getMonthStamps(monthMillis)
+        }
     }
 
     suspend fun getStamps(monthMillis: Long, startDay: Int, endDay: Int): List<MiracleStamp> {
-        return coroutineScope.async {
-            return@async calendarDao.getStamps(monthMillis, startDay, endDay)
-        }.await()
+        return withContext(coroutineScope.coroutineContext){
+            return@withContext calendarDao.getStamps(monthMillis, startDay, endDay)
+        }
     }
 
     fun insertStamp(stamp: MiracleStamp) {
