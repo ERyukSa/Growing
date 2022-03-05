@@ -27,7 +27,7 @@
                 android:id="@+id/button_back"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/background_button_ripple"
+                android:background="@drawable/background_ripple_round"
                 android:padding="4dp"
                 android:src="@drawable/ic_baseline_keyboard_backspace_24" />
         </LinearLayout>

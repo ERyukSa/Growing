@@ -11,6 +11,9 @@
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/text</item>
     </style>
+    <style name="motivationTitleStyle" parent="calendarTitleStyle">
+        <item name="android:textSize">17sp</item>
+    </style>
 
     <style name="dialogButtonOk" parent="Widget.AppCompat.Button" >
         <item name="android:background">@drawable/background_button_round</item>

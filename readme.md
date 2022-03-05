@@ -2,7 +2,9 @@
 ## 소개
 미라클 모닝과 동기부여를 도와주는 자기계발 모바일 앱 서비스입니다.
 
-![ezgif com-gif-maker](https://user-images.githubusercontent.com/48471292/155334149-59761a9a-a257-49fb-b920-bc877dc51848.gif)
+|미라클 모닝|동기부여|
+|:----:|:----:|
+|![ezgif com-gif-maker](https://user-images.githubusercontent.com/48471292/155334149-59761a9a-a257-49fb-b920-bc877dc51848.gif)|![ezgif com-gif-maker](https://user-images.githubusercontent.com/48471292/156901563-84ea5feb-bc19-4aff-bc32-c3381f4fa697.gif)|
 
 - 동기
   - 실제로 취업 준비를 하면서 동기부여에 도움을 줄 수 있는 앱이 있으면 어떨까 생각했습니다.
@@ -21,16 +23,18 @@ MVVM 패턴 적용, 커스텀 캘린더 구현, 야간 모드 지원, 리팩토�
 
 ## 주요 서비스
 ✔ 미라클 모닝: 일어난 시간을 달력에 스탬프처럼 기록할 수 있습니다.
-- [ ] 동기부여: 유튜브의 동기부여 영상들을 주제별로 분류해서 보여줍니다. (구현 예정)
+
+✔ 동기부여: 유튜브의 동기부여 영상들을 주제별로 분류해서 보여줍니다.
 - [ ] 함께 성장하기: 게시판에 자신의 다짐이나 해낸 일 등을 공유합니다. (기획 단계)
 
 <br>
 
 ## 제작 기간
-- 미라클 모닝: 2022-01-27 ~ 2022-02-18  
-  (기획, 구현, UI, 리팩토링)
-- 동기 부여:
+- 미라클 모닝: 2022-01-27 ~ 2022-02-1 (기획, 구현, UI, 리팩토링)
+- 동기 부여: 2022-03-02 ~ 2022-03-06 (기획, 데이터 수집/분류, 구현, UI)
 - 함께 성장:
+
+<br>
 
 ## 주요 사용 기술
 Kotlin, MVVM, Databinding, ViewModel, LiveData, Coroutine, Room, Custom Calendar
@@ -106,4 +110,50 @@ suspend fun getMonthStamps(monthMillis: Long): List<MiracleStamp> {
 
 </details>
 
+<br>
 
+## 트러블 슈팅
+
+### 유튜브 전체 화면
+<details>
+<summary>자세히</summary>
+
+- 문제 상황  
+  전체 화면 모드에서 회전되었던 화면 방향이 전체 화면을 해제했을 때 되돌아오지 않음
+- 해결 방법  
+  - YouTubePlayer에 있는 fullScreenListener를 추가해서 전체 화면 여부에 따라 Activity.requestedOrientation을 변경  
+  ```kotlin
+  player.setOnFullscreenListener {
+      requestedOrientation = if (it) {
+          ActivityInfo.SCREEN_ORIENTATION_LOCKED
+      } else {
+            ActivityInfo.SCREEN_ORIENTATION_USER
+    }
+
+    isPlayerFullScreen = it
+  }
+  ```
+  - isPlayerFullScreen: Boolean 변수를 선언해서 백버튼을 클릭했을 때 전체 화면 모드를 해제하고 화면 방향을 유저가 설정한 방향으로 세팅  
+   ```kotlin
+   override fun onBackPressed() {
+        if (isPlayerFullScreen && youtubePlayer != null) {
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_USER
+            youtubePlayer!!.setFullscreen(false)
+        } else{
+            super.onBackPressed()
+        }
+    }
+   ```
+</details>
+
+<br>
+
+## TODO
+- 미라클 모닝
+  1. 시간 입력 UI 개선
+- 동기부여
+  1. 무한 스크롤
+  2. 유튜브 목록 데이터 추가/정리
+  3. 좋아요, 북마크, 공유하기  
+- 함께 성장하기
+  1. 회원 기능

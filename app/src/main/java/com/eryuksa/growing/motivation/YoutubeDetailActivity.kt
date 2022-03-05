@@ -49,7 +49,7 @@ class YoutubeDetailActivity : AppCompatActivity() {
                     ) {
                         Toast.makeText(
                             this@YoutubeDetailActivity,
-                            "\"동영상 로딩 중 에러가 발생했습니다. 에러가 계속되면 문의 남겨주세요ㅠㅠ\"",
+                            "\"동영상 로딩 중 에러가 발생했습니다. 에러가 계속되면 문의 주세요ㅠㅠ\"",
                             Toast.LENGTH_SHORT
                         ).show()
 
