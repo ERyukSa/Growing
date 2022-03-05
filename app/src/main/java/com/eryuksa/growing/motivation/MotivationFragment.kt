@@ -21,7 +21,10 @@ class MotivationFragment : Fragment(R.layout.fragment_motivation) {
         ViewModelProvider(this)[YoutubeListViewModel::class.java]
     }
     private val listAdapter: YoutubeListAdapter by lazy {
-        YoutubeListAdapter(listViewModel)
+        YoutubeListAdapter(listViewModel) {
+            val intent = YoutubeDetailActivity.newIntent(requireContext(), it.videoId, it.title)
+            startActivity(intent)
+        }
     }
 
     override fun onCreateView(

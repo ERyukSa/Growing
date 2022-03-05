@@ -6,7 +6,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.eryuksa.growing.databinding.ItemYoutubeBinding
 import com.eryuksa.growing.motivation.data.YoutubeItem
 
-class YoutubeListAdapter(private val viewModel: YoutubeListViewModel) :
+class YoutubeListAdapter(
+    private val viewModel: YoutubeListViewModel,
+    private val onClick: (YoutubeItem) -> Unit
+) :
     RecyclerView.Adapter<YoutubeListAdapter.YoutubeHolder>() {
 
     override fun onCreateViewHolder(
@@ -26,11 +29,19 @@ class YoutubeListAdapter(private val viewModel: YoutubeListViewModel) :
         return viewModel.youtubeList.value?.size ?: 0
     }
 
-
     inner class YoutubeHolder(private val binding: ItemYoutubeBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
+        lateinit var mYoutube: YoutubeItem
+
+        init {
+            itemView.setOnClickListener{
+                onClick(mYoutube)
+            }
+        }
+
         fun bind(youtube: YoutubeItem) {
+            mYoutube = youtube
             binding.youtube = youtube
         }
     }
