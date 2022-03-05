@@ -1,0 +1,6 @@
+package com.eryuksa.growing.motivation.data
+
+enum class YoutubeCategory {
+    ALL, STUDY, ENTREPRENEUR, CHALLENGE, FAMOUS_LINE, BELIEVE_IN, CHANGE, RICH, SUCCESS,
+    BITTER_WORDS, PASSION, ATHLETE, CONSOLATION, CONFIDENCE, SELF_ESTEEM, GIVE_UP
+}

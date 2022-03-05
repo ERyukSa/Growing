@@ -3,12 +3,24 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/drawable/background_button_round.xml" value="0.1485" />
+        <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/drawable/background_round_12.xml" value="0.1485" />
+        <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/drawable/background_round_dialog.xml" value="0.1485" />
+        <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/drawable/calendar_24_outline.xml" value="0.1485" />
+        <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/drawable/ic_baseline_bookmark_24.xml" value="0.1485" />
+        <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/drawable/ic_baseline_bookmark_border_24.xml" value="0.1485" />
+        <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/drawable/ic_baseline_share_24.xml" value="0.1485" />
         <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/drawable/round_done_20.xml" value="0.15" />
         <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/layout/activity_main.xml" value="0.11503623188405797" />
         <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/layout/fragment_calendar.xml" value="0.11503623188405797" />
         <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/layout/fragment_miracle_morning.xml" value="0.1" />
+        <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/layout/fragment_motivation.xml" value="0.22" />
         <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/layout/fragment_settings_dialog.xml" value="0.11503623188405797" />
+        <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/layout/fragment_stamp_dialog.xml" value="0.13999999999999999" />
+        <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/layout/fragment_start_date_dialog.xml" value="0.11367753623188406" />
+        <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/layout/fragment_together.xml" value="0.11367753623188406" />
         <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/layout/item_date.xml" value="0.1" />
+        <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/layout/item_youtube.xml" value="0.12" />
       </map>
     </option>
   </component>

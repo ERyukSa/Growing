@@ -25,5 +25,22 @@
     <string name="pm">오후</string>
     <string name="date_format">yyyy년 M월 d일</string>
 
+    <string name="all">전체</string>
+    <string name="study">공부</string>
+    <string name="entrepreneur">기업가</string>
+    <string name="challenge">도전</string>
+    <string name="famous_line">명대사</string>
+    <string name="believe_in">믿음</string>
+    <string name="change">변화</string>
+    <string name="the_rich">부자</string>
+    <string name="success">성공</string>
+    <string name="bitter_words">쓴소리</string>
+    <string name="passion">열정</string>
+    <string name="athlete">운동선수</string>
+    <string name="consolation">위로</string>
+    <string name="confidence">자신감</string>
+    <string name="self_esteem">자존감</string>
+    <string name="give_up">포기</string>
+
     <string name="preference_key">com.eryuksa.growing.SHARED_PREFERENCE</string>
 </resources>

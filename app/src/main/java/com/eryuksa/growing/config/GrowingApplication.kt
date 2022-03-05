@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager.getDefaultSharedPreferences
 import com.eryuksa.growing.miracle_morning.calendar.data.CalendarRepository
+import com.eryuksa.growing.motivation.data.YoutubeRepository
 
 class GrowingApplication : Application() {
 
@@ -21,6 +22,7 @@ class GrowingApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         CalendarRepository.initialize(this)
+        YoutubeRepository.initialize()
 
         sSharedPreferences = getDefaultSharedPreferences(this)
         loadSettingsValue()

@@ -13,7 +13,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingHorizontal="16dp">
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragment_container"
@@ -26,10 +27,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            app:itemTextColor="@drawable/bottom_icon_color"
-            app:itemIconTint="@drawable/bottom_icon_color"
             android:background="@drawable/background_bottom_navigation"
             app:elevation="8dp"
+            app:itemIconTint="@drawable/bottom_icon_color"
+            app:itemTextColor="@drawable/bottom_icon_color"
             app:menu="@menu/activity_main_bottom"
             app:onItemSelectedListener="@{(menuItem) -> viewModel.setFragmentType(menuItem.itemId)}" />
     </LinearLayout>
