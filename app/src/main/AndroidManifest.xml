@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Growing">
         <activity
-            android:name=".motivation.YoutubeDetailActivity"
+            android:name=".motivation.youtube_detail.YoutubeDetailActivity"
             android:exported="false" />
         <activity
             android:name=".main.MainActivity"

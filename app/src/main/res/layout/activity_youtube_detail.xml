@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".motivation.YoutubeDetailActivity">
+        tools:context=".motivation.youtube_detail.YoutubeDetailActivity">
 
         <LinearLayout
             android:id="@+id/action_bar"

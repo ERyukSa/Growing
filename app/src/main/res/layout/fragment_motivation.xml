@@ -170,6 +170,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/horizontal_view"
+            android:scrollbars="vertical"
+            android:scrollbarFadeDuration="0"
             tools:listitem="@layout/item_youtube" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -16,23 +16,51 @@ class YoutubeListViewModel : ViewModel() {
 
     private val repository = YoutubeRepository.get()
 
+    private var currentList = mutableListOf<YoutubeItem>()
+    private var currentCategory = YoutubeCategory.ALL
+    private var lastLoadedItem: YoutubeItem? = null
+
+    private var _categoryChanged = false
+    val categoryChanged get() = _categoryChanged
+
+    private var isLoading = false
+    var prevListSize = 0
+
     private val _youtubeList: MutableLiveData<List<YoutubeItem>> = MutableLiveData(emptyList())
     val youtubeList: LiveData<List<YoutubeItem>>
         get() = _youtubeList
 
     init{
-        changeList(YoutubeCategory.ALL)
+        loadMoreItems()
+    }
+
+    fun loadMoreItems() {
+        if (isLoading) return
+
+        isLoading = true
+        prevListSize = currentList.size
+
+        CoroutineScope(viewModelScope.coroutineContext).launch {
+            currentList.addAll(repository.getItems(currentCategory, lastLoadedItem))
+            lastLoadedItem = currentList.last()
+            _youtubeList.value = currentList
+            isLoading = false
+        }
+    }
+
+    private fun changeCategory(category: YoutubeCategory) {
+        currentList.clear()
+        _categoryChanged = true
+        _youtubeList.value = currentList
+        lastLoadedItem = null
+        currentCategory = category
+        _categoryChanged = false
     }
 
     fun onChipCheckedChanged(@IdRes checkedId: Int) {
         val category = getCategory(checkedId)
-        changeList(category)
-    }
-
-    private fun changeList(category: YoutubeCategory) {
-        CoroutineScope(viewModelScope.coroutineContext).launch {
-            _youtubeList.value = repository.getList(category)
-        }
+        changeCategory(category)
+        loadMoreItems()
     }
 
     private fun getCategory(@IdRes chipId: Int): YoutubeCategory {

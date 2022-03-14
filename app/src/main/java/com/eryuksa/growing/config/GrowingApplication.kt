@@ -28,6 +28,11 @@ class GrowingApplication : Application() {
         loadSettingsValue()
     }
 
+    override fun onTerminate() {
+        YoutubeRepository.get().onDestroy()
+        super.onTerminate()
+    }
+
     /**
      * 시작 날짜, 목표 기상 시간을 불러온다
      */

@@ -1,4 +1,4 @@
-package com.eryuksa.growing.motivation
+package com.eryuksa.growing.motivation.youtube_detail
 
 import android.content.Context
 import android.content.Intent
