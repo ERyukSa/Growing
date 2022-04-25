@@ -14,5 +14,7 @@
         <!-- Customize your theme here. -->
 
         <item name="android:colorBackground">@color/background</item>
+
+        <item name="android:windowContentTransitions">true</item>
     </style>
 </resources>

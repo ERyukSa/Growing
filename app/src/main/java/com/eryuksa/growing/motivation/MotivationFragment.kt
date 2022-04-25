@@ -14,8 +14,6 @@ import com.eryuksa.growing.databinding.FragmentMotivationBinding
 import com.eryuksa.growing.motivation.data.YoutubeRepository
 import com.eryuksa.growing.motivation.youtube_detail.YoutubeDetailActivity
 
-private const val LOAD_ITEMS_OFFSET = 5 // 스크롤 리스너에 적용) 남아있는 게 5개 이하면 데이터를 추가로 요청
-
 class MotivationFragment : Fragment(R.layout.fragment_motivation) {
 
     private lateinit var binding: FragmentMotivationBinding
@@ -71,8 +69,10 @@ class MotivationFragment : Fragment(R.layout.fragment_motivation) {
         }
         
         binding.recyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                if (listViewModel.prevListSize % YoutubeRepository.LIMIT_SIZE != 0) {
+                // 마지막으로 가져온 데이터 개수가 LIMIT_SIZE 이하면 더 이상 가져올 데이터가 없다
+                if (listViewModel.currentListSize % YoutubeRepository.LIMIT_SIZE != 0) {
                     return
                 }
 
@@ -89,6 +89,8 @@ class MotivationFragment : Fragment(R.layout.fragment_motivation) {
     }
 
     companion object {
+        private const val LOAD_ITEMS_OFFSET = 5 // 스크롤 리스너에 적용) 남아있는 게 5개 이하면 데이터를 추가로 요청
+
         fun newInstance(): MotivationFragment {
             return MotivationFragment()
         }

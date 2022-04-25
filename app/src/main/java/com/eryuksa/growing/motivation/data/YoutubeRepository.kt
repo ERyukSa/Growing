@@ -27,7 +27,6 @@ class YoutubeRepository private constructor() {
         query.get()
             .addOnSuccessListener { result ->
                 for (document in result) {
-                    Log.d(TAG, "$document")
                     resultList.add(createYoutubeItem(document))
                 }
             }

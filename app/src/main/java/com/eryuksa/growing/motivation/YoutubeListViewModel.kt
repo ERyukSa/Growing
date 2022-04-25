@@ -17,6 +17,9 @@ class YoutubeListViewModel : ViewModel() {
     private val repository = YoutubeRepository.get()
 
     private var currentList = mutableListOf<YoutubeItem>()
+    val currentListSize get() = currentList.size
+    var prevListSize = 0 // 변경되기 전의 리스트 사이즈
+
     private var currentCategory = YoutubeCategory.ALL
     private var lastLoadedItem: YoutubeItem? = null // DB의 cursor를 위한 변수. 리포지토리로 옮기는 게 더 좋을 것 같다는 생각이 든다
 
@@ -27,7 +30,6 @@ class YoutubeListViewModel : ViewModel() {
 
     private lateinit var loadingJob: Job // 리포지토리에 데이터 요청하는 코루틴
     private var isLoading = false
-    var prevListSize = 0 // 변경되기 전의 리스트 사이즈
 
     private val _youtubeList: MutableLiveData<List<YoutubeItem>> = MutableLiveData(emptyList())
     val youtubeList: LiveData<List<YoutubeItem>>

@@ -29,7 +29,7 @@ class MainViewModel : ViewModel() {
     // 바텀 메뉴 아이템에 맞게 프래그먼트 타입을 가져온다
     private fun getFragmentType(itemId: Int): MainFragmentType {
         return when (itemId) {
-            R.id.menu_together -> MainFragmentType.TOGETHER
+            R.id.menu_together -> MainFragmentType.TODO
             R.id.menu_motivation -> MainFragmentType.MOTIVATION
             R.id.menu_miracle_morning -> MainFragmentType.MIRACLE_MORNING
             else -> throw IllegalArgumentException("not found main fragment Id")

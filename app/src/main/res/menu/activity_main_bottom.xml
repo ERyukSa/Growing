@@ -4,7 +4,7 @@
     <item
         android:id="@+id/menu_together"
         android:icon="@drawable/bottom_item_together"
-        android:title="@string/growing_together"
+        android:title="@string/todo"
         app:showAsAction="ifRoom|withText"/>
 
     <item

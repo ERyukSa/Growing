@@ -9,7 +9,7 @@ import com.eryuksa.growing.R
 import com.eryuksa.growing.databinding.ActivityMainBinding
 import com.eryuksa.growing.miracle_morning.MiracleMorningFragment
 import com.eryuksa.growing.motivation.MotivationFragment
-import com.eryuksa.growing.together.TogetherFragment
+import com.eryuksa.growing.todo.TodoFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() {
         // 앱을 실행하고 선택한 화면을 처음 보여줄 때
         if (fragment == null) {
             fragment = when (fragmentType) {
-                MainFragmentType.TOGETHER -> TogetherFragment.newInstance()
+                MainFragmentType.TODO -> TodoFragment.newInstance()
                 MainFragmentType.MOTIVATION -> MotivationFragment.newInstance()
                 MainFragmentType.MIRACLE_MORNING -> MiracleMorningFragment.newInstance()
             }

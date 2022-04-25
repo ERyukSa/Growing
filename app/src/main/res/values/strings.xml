@@ -42,5 +42,10 @@
     <string name="self_esteem">자존감</string>
     <string name="give_up">포기</string>
 
+    <string name="todo">할 일</string>
+    <string name="done">해냈음!</string>
+
     <string name="preference_key">com.eryuksa.growing.SHARED_PREFERENCE</string>
+
+    <string name="transition_add_todo">add todo</string>
 </resources>
