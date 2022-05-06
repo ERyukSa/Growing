@@ -13,14 +13,20 @@
         <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/drawable/background_round_12.xml" value="0.1485" />
         <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/drawable/background_round_dialog.xml" value="0.1485" />
         <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/drawable/background_settings_ripple.xml" value="0.1485" />
+        <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/drawable/background_top_round_dialog.xml" value="0.1475" />
         <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/drawable/baseline_settings_24.xml" value="0.1485" />
         <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/drawable/bottom_icon_color.xml" value="0.1485" />
         <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/drawable/bottom_item_motivation.xml" value="0.1485" />
+        <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/drawable/btn_confirm_add_todo.xml" value="0.1475" />
+        <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/drawable/calendar_24_filled.xml" value="0.1475" />
         <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/drawable/calendar_24_outline.xml" value="0.1485" />
         <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/drawable/ic_baseline_bookmark_24.xml" value="0.1485" />
         <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/drawable/ic_baseline_bookmark_border_24.xml" value="0.1485" />
         <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/drawable/ic_baseline_keyboard_backspace_24.xml" value="0.1485" />
         <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/drawable/ic_baseline_share_24.xml" value="0.1485" />
+        <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/drawable/ic_round_check_24.xml" value="0.1475" />
+        <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/drawable/ic_round_check_circle_24.xml" value="0.1475" />
+        <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/drawable/ic_round_delete_outline_24.xml" value="0.1475" />
         <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/drawable/my_quotation.xml" value="0.1485" />
         <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/drawable/round_done_20.xml" value="0.15" />
         <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/drawable/round_verified_20.xml" value="0.1485" />
@@ -28,6 +34,7 @@
         <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/layout/activity_main.xml" value="0.11503623188405797" />
         <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/layout/activity_youtube_detail.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/layout/bottom_dialog_add_todo.xml" value="0.1743659420289855" />
+        <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/layout/dialog_add_todo.xml" value="0.1743659420289855" />
         <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/layout/fragment_calendar.xml" value="0.11503623188405797" />
         <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/layout/fragment_miracle_morning.xml" value="0.1" />
         <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/layout/fragment_motivation.xml" value="0.22" />
@@ -38,7 +45,7 @@
         <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/layout/fragment_together.xml" value="0.11367753623188406" />
         <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/layout/item_date.xml" value="0.1" />
         <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/layout/item_done_header.xml" value="0.17708333333333334" />
-        <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/layout/item_todo.xml" value="0.17708333333333334" />
+        <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/layout/item_todo.xml" value="0.22" />
         <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/layout/item_youtube.xml" value="0.12" />
         <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/menu/activity_main_bottom.xml" value="0.17916666666666667" />
         <entry key="..\:/Users/s_jslkap227/Desktop/study/Growing/app/src/main/res/menu/fragment_miracle_morning.xml" value="0.17916666666666667" />

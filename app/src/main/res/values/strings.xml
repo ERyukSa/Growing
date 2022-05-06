@@ -43,9 +43,9 @@
     <string name="give_up">포기</string>
 
     <string name="todo">할 일</string>
-    <string name="done">해냈음!</string>
+    <string name="done">끝마침!</string>
+    <string name="todo_what">오늘은 어떤 일을 하실 건가요?</string>
+    <string name="add_todo">할 일 추가하기</string>
 
     <string name="preference_key">com.eryuksa.growing.SHARED_PREFERENCE</string>
-
-    <string name="transition_add_todo">add todo</string>
 </resources>

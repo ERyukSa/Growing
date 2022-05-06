@@ -51,7 +51,6 @@ class MiracleMorningFragment : Fragment(), FragmentResultListener {
                 when (it.itemId) {
                     R.id.menu_setting -> {
                         SettingsDialogFragment.newInstance()
-
                             .show(parentFragmentManager, SettingsDialogFragment.TAG)
                     }
                 }

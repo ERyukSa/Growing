@@ -15,6 +15,7 @@
         <!-- Customize your theme here. -->
 
         <item name="colorOnSurface">#0f0f0f</item>
+        <item name="android:textColor">@color/text</item>"
 
         <item name="android:windowContentTransitions">true</item>
     </style>

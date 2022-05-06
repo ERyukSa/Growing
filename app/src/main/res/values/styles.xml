@@ -13,6 +13,8 @@
     </style>
     <style name="motivationTitleStyle" parent="calendarTitleStyle">
         <item name="android:textSize">17sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/text</item>
     </style>
 
     <style name="dialogButtonOk" parent="Widget.AppCompat.Button" >
@@ -40,4 +42,45 @@
         <item name="android:textSize">13sp</item>
         <item name="chipCornerRadius">8dp</item>
     </style>
+
+    <style name="addTodoDialogAnimation80">
+        <item name="android:windowEnterAnimation">@animator/anim_in_80</item>
+    </style>
+    <style name="addTodoDialogAnimation81">
+        <item name="android:windowEnterAnimation">@animator/anim_in_81</item>
+    </style>
+    <style name="addTodoDialogAnimation82">
+        <item name="android:windowEnterAnimation">@animator/anim_in_82</item>
+    </style>
+    <style name="addTodoDialogAnimation83">
+        <item name="android:windowEnterAnimation">@animator/anim_in_83</item>
+    </style>
+    <style name="addTodoDialogAnimation84">
+        <item name="android:windowEnterAnimation">@animator/anim_in_84</item>
+    </style>
+    <style name="addTodoDialogAnimation85">
+        <item name="android:windowEnterAnimation">@animator/anim_in_85</item>
+    </style>
+    <style name="addTodoDialogAnimation86">
+        <item name="android:windowEnterAnimation">@animator/anim_in_86</item>
+    </style>
+    <style name="addTodoDialogAnimation87">
+        <item name="android:windowEnterAnimation">@animator/anim_in_87</item>
+    </style>
+    <style name="addTodoDialogAnimation88">
+        <item name="android:windowEnterAnimation">@animator/anim_in_88</item>
+    </style>
+    <style name="addTodoDialogAnimation89">
+        <item name="android:windowEnterAnimation">@animator/anim_in_89</item>
+    </style>
+    <style name="addTodoDialogAnimation90">
+        <item name="android:windowEnterAnimation">@animator/anim_in_90</item>
+    </style>
+    <style name="addTodoDialogAnimation91">
+        <item name="android:windowEnterAnimation">@animator/anim_in_91</item>
+    </style>
+    <style name="addTodoDialogAnimation92">
+        <item name="android:windowEnterAnimation">@animator/anim_in_92</item>
+    </style>
+
 </resources>

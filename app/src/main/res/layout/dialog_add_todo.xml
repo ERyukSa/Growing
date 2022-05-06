@@ -1,32 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+        <variable
+            name="dialogViewModel"
+            type="com.eryuksa.growing.todo.add.AddTodoViewModel" />
+        <variable
+            name="sharedViewModel"
+            type="com.eryuksa.growing.todo.TodoViewModel" />
+        <variable
+            name="variableEditTextTodo"
+            type="android.widget.EditText" />
+    </data>
 
-    <EditText
-        android:id="@+id/editText"
-        android:layout_width="0dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/dialog_root"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:ems="10"
-        android:inputType="textMultiLine"
-        android:text="Name"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:background="@drawable/background_top_round_dialog"
+        android:padding="16dp">
 
-    <ImageButton
-        android:id="@+id/button_add"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:background="@android:color/transparent"
-        android:src="@drawable/ic_round_check_circle_24"
-        android:transitionName="@string/transition_add_todo"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/editText"
-        app:layout_constraintVertical_bias="0.02" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <EditText
+            android:id="@+id/editText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:ems="10"
+            android:hint="@string/todo_what"
+            android:inputType="textMultiLine"
+            android:addTextChangedListener="@{dialogViewModel.todoTextWatcher}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <requestFocus />
+        </EditText>
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/btn_confirm"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="24dp"
+            android:enabled="@{dialogViewModel.btnConfirmEnabled}"
+            android:background="@drawable/btn_confirm_add_todo"
+            tools:backgroundTint="@color/black"
+            app:onClickListener="@{(_) -> sharedViewModel.onClickConfirmAdd(variableEditTextTodo.text.toString())}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/editText" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
