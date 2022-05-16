@@ -1,5 +1,6 @@
 package com.eryuksa.growing.todo
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
@@ -45,6 +46,7 @@ class TodoAdapter(
         fun bind(todo: TodoItem.Todo) {
             binding.todo = todo
             binding.executePendingBindings()
+            Log.d("로그", "bind() - $todo")
         }
 
         companion object {

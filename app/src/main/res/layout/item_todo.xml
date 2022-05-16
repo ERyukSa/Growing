@@ -22,6 +22,7 @@
             android:id="@+id/checkBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:checked="@{todo.done}"
             app:onCheckedChangeListener="@{(checkBox, checked) -> viewModel.onTodoStatusChanged(todo, checked)}"
             android:layout_gravity="top" />
 
