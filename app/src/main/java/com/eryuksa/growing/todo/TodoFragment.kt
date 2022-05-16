@@ -59,7 +59,7 @@ class TodoFragment : Fragment() {
         animSet.playTogether(scaleX)
         animSet.start()
 
-        todoViewModel.tempListForUi.observe(viewLifecycleOwner) {
+        todoViewModel.listForUi.observe(viewLifecycleOwner) {
             todoAdapter.submitList(it)
         }
         /*todoViewModel.listForUi.observe(viewLifecycleOwner) {
