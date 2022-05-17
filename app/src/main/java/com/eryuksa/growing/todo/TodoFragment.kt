@@ -12,8 +12,12 @@ import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.eryuksa.growing.R
 import com.eryuksa.growing.databinding.FragmentTodoBinding
 import com.eryuksa.growing.todo.add.AddTodoDialog
+import com.eryuksa.growing.util.EventObserver
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.snackbar.Snackbar
 import kotlin.math.round
 
 class TodoFragment : Fragment() {
@@ -26,6 +30,19 @@ class TodoFragment : Fragment() {
     private var percentOfCenterX = 0.0
     private var insetBtmOfDialog = 0
 
+    private val btmNavView: BottomNavigationView by lazy {
+        requireActivity().findViewById(R.id.bottom_view)
+    }
+    private val removedSnackBar: Snackbar by lazy {
+        Snackbar.make(binding.root, R.string.removed, Snackbar.LENGTH_SHORT).apply {
+            anchorView = btmNavView
+            setAction("되돌리기") {
+                todoViewModel.rollBackFromRemoved()
+                this.dismiss()
+            }
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -36,10 +53,7 @@ class TodoFragment : Fragment() {
             lifecycleOwner = viewLifecycleOwner
             viewModel = todoViewModel
         }
-        binding.todoList.apply {
-            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-            adapter = todoAdapter
-        }
+        setUpRecyclerView()
 
         return binding.root
     }
@@ -62,13 +76,22 @@ class TodoFragment : Fragment() {
         todoViewModel.listForUi.observe(viewLifecycleOwner) {
             todoAdapter.submitList(it)
         }
-        /*todoViewModel.listForUi.observe(viewLifecycleOwner) {
-            todoAdapter.submitList(it)
-        }*/
 
         binding.floatingActionButton.setOnClickListener {
             val dialog = AddTodoDialog.newInstance(percentOfCenterX, insetBtmOfDialog)
             dialog.show(parentFragmentManager, AddTodoDialog.TAG)
+        }
+
+        todoViewModel.showRemovedSnackbar.observe(viewLifecycleOwner, EventObserver{
+            removedSnackBar.show()
+        })
+    }
+
+    private fun setUpRecyclerView() {
+        binding.todoList.apply {
+            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+            adapter = todoAdapter
+            // ItemTouchHelper(todoTouchHelper).attachToRecyclerView(this) // 드래그 드롭 터치 헬퍼
         }
     }
 
@@ -97,6 +120,41 @@ class TodoFragment : Fragment() {
             Log.d("로그", "$percentOfCenterX")
         }
     }
+
+    /*
+    /**
+     * 드래그 앤 드롭 터치 헬퍼
+     */
+    private val todoTouchHelper = object: ItemTouchHelper.Callback(){
+
+        // drag or swipe 시 움직인 방향을 반환하는 함수
+        override fun getMovementFlags(
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder
+        ): Int {
+            // 헤더는 옮기지 못하게 한다
+            if (viewHolder is TodoAdapter.HeaderViewHolder) {
+                return makeMovementFlags(0, 0)
+            }
+
+            return makeMovementFlags(ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0)
+        }
+
+        override fun onMove(
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder,
+            target: RecyclerView.ViewHolder
+        ): Boolean {
+            val fromTodo = todoAdapter.getTodoItem(viewHolder.adapterPosition) as TodoItem.Todo
+            val toTodo = todoAdapter.getTodoItem(target.adapterPosition)
+            return todoViewModel.swapTodos(fromTodo, toTodo)
+        }
+
+        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+            TODO("Not yet implemented")
+        }
+    }
+    */
 
     companion object {
         fun newInstance(): TodoFragment {

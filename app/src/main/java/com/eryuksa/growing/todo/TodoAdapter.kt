@@ -11,7 +11,7 @@ import com.eryuksa.growing.databinding.ItemDoneHeaderBinding
 import com.eryuksa.growing.databinding.ItemTodoBinding
 
 private const val ITEM_VIEW_TYPE_TODO = 0
-private const val ITEM_VIEW_TYPE_DONE_HEADER = 1
+const val ITEM_VIEW_TYPE_DONE_HEADER = 1
 
 class TodoAdapter(
     private val viewModel: TodoViewModel,
@@ -38,6 +38,10 @@ class TodoAdapter(
             val todo = getItem(position) as TodoItem.Todo
             holder.bind(todo)
         }
+    }
+
+    fun getTodoItem(position: Int): TodoItem {
+        return getItem(position)
     }
 
     class TodoViewHolder private constructor(val binding: ItemTodoBinding) :
