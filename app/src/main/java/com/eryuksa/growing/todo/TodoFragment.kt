@@ -11,7 +11,9 @@ import android.view.ViewGroup
 import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.eryuksa.growing.R
 import com.eryuksa.growing.databinding.FragmentTodoBinding
 import com.eryuksa.growing.todo.add.AddTodoDialog
@@ -35,7 +37,7 @@ class TodoFragment : Fragment() {
     }
     private val removedSnackBar: Snackbar by lazy {
         Snackbar.make(binding.root, R.string.removed, Snackbar.LENGTH_SHORT).apply {
-            anchorView = btmNavView
+            //anchorView = btmNavView
             setAction("되돌리기") {
                 todoViewModel.rollBackFromRemoved()
                 this.dismiss()
@@ -91,7 +93,7 @@ class TodoFragment : Fragment() {
         binding.todoList.apply {
             layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
             adapter = todoAdapter
-            // ItemTouchHelper(todoTouchHelper).attachToRecyclerView(this) // 드래그 드롭 터치 헬퍼
+            ItemTouchHelper(todoTouchHelper).attachToRecyclerView(this) // 드래그 드롭 터치 헬퍼
         }
     }
 
@@ -121,19 +123,18 @@ class TodoFragment : Fragment() {
         }
     }
 
-    /*
     /**
      * 드래그 앤 드롭 터치 헬퍼
      */
-    private val todoTouchHelper = object: ItemTouchHelper.Callback(){
+    private val todoTouchHelper = object: ItemTouchHelper.Callback() {
 
         // drag or swipe 시 움직인 방향을 반환하는 함수
         override fun getMovementFlags(
             recyclerView: RecyclerView,
             viewHolder: RecyclerView.ViewHolder
         ): Int {
-            // 헤더는 옮기지 못하게 한다
-            if (viewHolder is TodoAdapter.HeaderViewHolder) {
+            // 헤더는 옮기지 못하게 한다, 변경중일 때도 못옮기게 한다
+            if (viewHolder is TodoAdapter.HeaderViewHolder || todoViewModel.isSwapping) {
                 return makeMovementFlags(0, 0)
             }
 
@@ -145,16 +146,18 @@ class TodoFragment : Fragment() {
             viewHolder: RecyclerView.ViewHolder,
             target: RecyclerView.ViewHolder
         ): Boolean {
-            val fromTodo = todoAdapter.getTodoItem(viewHolder.adapterPosition) as TodoItem.Todo
-            val toTodo = todoAdapter.getTodoItem(target.adapterPosition)
-            return todoViewModel.swapTodos(fromTodo, toTodo)
+            if (todoViewModel.isSwapping) return true
+
+            val fromPos = viewHolder.adapterPosition
+            val toPos = target.adapterPosition
+            return todoViewModel.swapTodos(fromPos, toPos)
         }
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             TODO("Not yet implemented")
         }
     }
-    */
+
 
     companion object {
         fun newInstance(): TodoFragment {

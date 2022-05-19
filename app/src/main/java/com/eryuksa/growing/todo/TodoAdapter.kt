@@ -1,6 +1,5 @@
 package com.eryuksa.growing.todo
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
@@ -11,7 +10,7 @@ import com.eryuksa.growing.databinding.ItemDoneHeaderBinding
 import com.eryuksa.growing.databinding.ItemTodoBinding
 
 private const val ITEM_VIEW_TYPE_TODO = 0
-const val ITEM_VIEW_TYPE_DONE_HEADER = 1
+private const val ITEM_VIEW_TYPE_DONE_HEADER = 1
 
 class TodoAdapter(
     private val viewModel: TodoViewModel,
@@ -40,17 +39,12 @@ class TodoAdapter(
         }
     }
 
-    fun getTodoItem(position: Int): TodoItem {
-        return getItem(position)
-    }
-
     class TodoViewHolder private constructor(val binding: ItemTodoBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(todo: TodoItem.Todo) {
             binding.todo = todo
             binding.executePendingBindings()
-            Log.d("로그", "bind() - $todo")
         }
 
         companion object {
@@ -60,7 +54,10 @@ class TodoAdapter(
                     viewModel = _viewModel
                     lifecycleOwner = _lifecycleOwner
                 }
-                return TodoViewHolder(binding)
+
+                return TodoViewHolder(binding).also {
+                    binding.viewHolder = it
+                }
             }
         }
     }
@@ -82,10 +79,12 @@ class TodoAdapter(
 }
 
 class TodoDiffCallback : DiffUtil.ItemCallback<TodoItem>() {
+    // 같은 객체인지
     override fun areItemsTheSame(oldItem: TodoItem, newItem: TodoItem): Boolean {
         return oldItem.id == newItem.id
     }
 
+    // 동일한 데이터를 갖고 있는지
     override fun areContentsTheSame(oldItem: TodoItem, newItem: TodoItem): Boolean {
         return oldItem == newItem
     }

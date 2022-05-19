@@ -2,281 +2,190 @@ package com.eryuksa.growing.todo
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.eryuksa.growing.util.Event
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import java.util.*
 
 class TodoViewModel : ViewModel() {
 
-    // 연결 리스트
-    private var todoHead: TodoItem.Todo? = null
-    private var todoTail: TodoItem.Todo? = null
-    private var doneHead: TodoItem.Todo? = null
-    private var doneTail: TodoItem.Todo? = null
-
-    private var justRemovedTodo: TodoItem.Todo? = null // 직전에 삭제한 Todo -> 되돌릴 때 사용
+    private val todoList = mutableListOf<TodoItem>()
+    private val doneHeader = TodoItem.DoneHeader
+    private var headerIdx = 0 // 헤더 자리 -> 헤더 위에 할 일 추가할 때 사용
 
     private var _listForUi = MutableLiveData<List<TodoItem>>()
     val listForUi: LiveData<List<TodoItem>>
         get() = _listForUi
 
-    private var _numOfTodo = 0
-    val numOfTodo = MutableLiveData<String>()
-    private var _numOfDone = 0
-    val numOfDone = MutableLiveData<String>()
+    private val _numOfTodo = MutableLiveData(0)
+    val numOfTodo: LiveData<String> = Transformations.map(_numOfTodo) { it.toString() }
+    private var _numOfDone = MutableLiveData(0)
+    val numOfDone: LiveData<String> = Transformations.map(_numOfDone) { it.toString() }
 
-    private val _showRemovedSnackbar = MutableLiveData<Event<Unit>>() // 삭제됐음을 알리는 스낵바를 띄워라!
+    // 직전에 삭제한 할 일 -> 되돌릴 때 사용
+    private var removedTodo: TodoItem.Todo? = null
+    private var removedIdx = 0
+
+    // 삭제됐음을 알리는 스낵바를 띄워라!
+    private val _showRemovedSnackbar = MutableLiveData<Event<Unit>>()
     val showRemovedSnackbar: LiveData<Event<Unit>>
         get() = _showRemovedSnackbar
 
-    private var i = 0L
+    // 항목 위치 변경 중
+    var isSwapping = false
+
+    private var i = 0L // 객체 아이디
 
     /**
-     * 할 일 목록의 꼭대기에 추가
+     * 할 일 추가
      */
-    private fun addTodoFirst(todo: TodoItem.Todo) {
-        _numOfTodo += 1
-        numOfTodo.value = _numOfTodo.toString()
-
-        todo.next = null
-        todo.prev = todoTail
-        todoTail?.let { it.next = todo }
-        todoTail = todo
-        if (todoHead == null) todoHead = todo
-
+    fun add(todo: TodoItem.Todo) {
+        moveToTodo(todo)
         updateListForUi()
     }
 
     /**
-     * 할 일 목록의 꼭대기에 추가
+     * 할 일 영역에 넣기
      */
-    private fun addTodoLast(todo: TodoItem.Todo) {
-        _numOfTodo += 1
-        numOfTodo.value = _numOfTodo.toString()
-
-        todo.prev = null
-        todo.next = todoHead
-        todoHead?.let { it.prev = todo }
-        todoHead = todo
-        if (todoTail == null) todoTail = todo
-
-        updateListForUi()
+    private fun moveToTodo(todo: TodoItem.Todo) {
+        _numOfTodo.value = _numOfTodo.value?.plus(1)
+        todoList.add(headerIdx++, todo)
     }
 
     /**
-     * 완료 목록 끝에 추가
+     * 완료 영역에 넣기
      */
-    private fun addDoneLast(todo: TodoItem.Todo) {
-        _numOfDone += 1
-        numOfDone.value = _numOfDone.toString()
-
-        todo.next = null
-        todo.prev = doneTail
-        doneTail?.let { it.next = todo }
-        doneTail = todo
-        if (doneHead == null) doneHead = todo
-    }
-
-    private fun addDoneFirst(todo: TodoItem.Todo) {
-        _numOfDone += 1
-        numOfDone.value = _numOfDone.toString()
-
-        todo.prev = null
-        todo.next = doneHead
-        doneHead?.let{ it.prev = todo }
-        doneHead = todo
-        if (doneTail == null) doneTail = todo
-    }
-
-    /**
-     * 할 일 완료
-     */
-    private fun completeTodo(todo: TodoItem.Todo) {
-        todo.done.value = true
-
-        removeTodo(todo)  // 할 일 목록에서 제거
-        addDoneLast(todo) // 완료 목록에 추가
-        updateListForUi()
-    }
-
-    /**
-     * TodoItem 삭제
-     */
-    fun remove(todo: TodoItem.Todo) {
-        justRemovedTodo = todo
-
-        if (todo.done.value == true) {
-            removeDone(todo)
-        } else {
-            removeTodo(todo)
-        }
-
-        updateListForUi()
-        _showRemovedSnackbar.value = Event(Unit)
-    }
-
-    /**
-     * 할 일 목록에서 삭제
-     */
-    private fun removeTodo(todo: TodoItem.Todo) {
-        _numOfTodo -= 1
-        numOfTodo.value = _numOfTodo.toString()
-
-        // 할 일 목록에서 제거
-        if(todoHead == todoTail) {
-            todoHead = null
-            todoTail = null
-        } else if (todo == todoHead) {
-            todoHead = todo.next
-            todoHead!!.prev = null
-        } else if (todo == todoTail) {
-            todoTail = todo.prev
-            todoTail!!.next = null
-        } else {
-            todo.prev!!.next = todo.next
-            todo.next!!.prev = todo.prev
+    private fun moveToDone(todo: TodoItem.Todo) {
+        _numOfDone.value = _numOfDone.value?.plus(1)?.also {
+            if (it == 1) todoList.add(doneHeader)
+            todoList.add(todo)
         }
     }
 
     /**
-     * 완료 목록에서 삭제
+     * 할 일 -> 완료
      */
-    private fun removeDone(todo: TodoItem.Todo) {
-        _numOfDone -= 1
-        numOfDone.value = _numOfDone.toString()
-
-        // 완료 목록 변경
-        if (doneHead == doneTail) {
-            doneHead = null
-            doneTail = null
-        } else if (todo == doneHead){
-            doneHead = todo.next
-            doneHead!!.prev = null
-        } else if (todo == doneTail) {
-            doneTail = todo.prev
-            doneTail!!.next = null
-        } else {
-            todo.prev!!.next = todo.next
-            todo.next!!.prev = todo.prev
-        }
-    }
-
-    /**
-     * 할 일 목록으로 되돌리기
-     */
-    private fun rollBackToTodo(todo: TodoItem.Todo) {
-        todo.done.value = false
-
-        removeDone(todo) // 완료 목록에서 제거
-        addTodoFirst(todo)    // 할 일 목록에 추가
+    private fun completeTodo(idx: Int) {
+        val todo = todoList[idx] as TodoItem.Todo
+        removeFromTodo(idx)
+        moveToDone(todo)
         updateListForUi()
     }
 
     /**
-     * 삭제했던 항목 복구
+     * 화면에서 아예 삭제
+     */
+    fun remove(idx: Int) {
+        // 되돌릴 때 사용하기 위해 방금 삭제한 객체 저장
+        removedTodo = (todoList[idx] as TodoItem.Todo)
+        removedIdx = idx
+
+        // 해당 영역에서 삭제
+        if (removedTodo!!.done.value == true) {
+            removeFromDone(idx)
+        } else {
+            removeFromTodo(idx)
+        }
+
+        _showRemovedSnackbar.value = Event(Unit) // 스낵바 요청
+        updateListForUi()
+    }
+
+    /**
+     * 할 일 영역에서 삭제
+     */
+    private fun removeFromTodo(idx: Int) {
+        _numOfTodo.value = _numOfTodo.value?.minus(1)
+        todoList.removeAt(idx)
+        headerIdx-- // 헤더 위치를 위로 당긴다
+    }
+
+    /**
+     * 완료 영역에서 삭제
+     */
+    private fun removeFromDone(idx: Int) {
+        _numOfDone.value = _numOfDone.value?.minus(1)?.also {
+            todoList.removeAt(idx)
+            if (it == 0) todoList.removeAt(idx - 1) // 완료한 일이 없으면 헤더도 함께 삭제
+        }
+    }
+
+    /**
+     * 완료 -> 할 일
+     */
+    private fun rollBackToTodo(idx: Int) {
+        val todo = todoList[idx] as TodoItem.Todo
+        removeFromDone(idx)
+        moveToTodo(todo)
+        updateListForUi()
+    }
+
+    /**
+     * 삭제 -> 되돌리기
      */
     fun rollBackFromRemoved() {
-        val rolledBackTodo = justRemovedTodo
-        justRemovedTodo = null
 
-        rolledBackTodo?.let {
-            // 목록 개수 변경
-            if (it.done.value == true) {
-                _numOfDone += 1
-                numOfDone.value = _numOfDone.toString()
+        removedTodo?.let { todo ->
+            // 완료 항목이 0개인 상태에서 되돌리기 -> 헤더도 함께 추가
+            if (_numOfDone.value == 0) todoList.add(doneHeader)
+            todoList.add(removedIdx, todo)
+
+            if (todo.done.value == true) {
+                _numOfDone.value = _numOfDone.value!! + 1
             } else {
-                _numOfTodo += 1
-                numOfTodo.value = _numOfTodo.toString()
+                _numOfTodo.value = _numOfTodo.value!! + 1
             }
-
-            val prevTodo = it.prev
-            val nextTodo = it.next
-
-            if (prevTodo == nextTodo) { // 영역에 Todo가 하나만 있었을 때
-                if (it.done.value == true) {
-                    doneHead = it
-                    doneTail = it
-                } else {
-                    todoHead = it
-                    todoTail = it
-                }
-            } else if (prevTodo == null) { // 2개 이상의 목록에서 맨 위에 있었을 떄
-                it.next!!.prev = it
-                if (it.done.value == true) doneHead = it
-                else todoHead = it
-            } else if (nextTodo == null) { // 2개 이상 목록에서 영역의 마지막에 있었을 때
-                it.prev!!.next = it
-                if (it.done.value == true) doneTail = it
-                else todoTail = it
-            } else {
-                it.prev!!.next = it
-                it.next!!.prev = it
-            }
+            updateListForUi()
+            removedTodo = null
         }
-
-        updateListForUi()
     }
 
     /**
-     * Fragment에 제공할 리스트로 변경
+     * 프래그먼트에게 제공할 리스트
      */
     private fun updateListForUi() {
-        viewModelScope.launch(Dispatchers.Default) {
-            val updatedList = mutableListOf<TodoItem>()
-            var currentTodo = todoHead
-
-            while(currentTodo != null) {    // 할 일 목록
-                updatedList.add(currentTodo)
-                currentTodo = currentTodo.next
-            }
-
-            if (doneHead != null) {         // 완료 목록
-                updatedList.add(TodoItem.DoneHeader)
-                currentTodo = doneHead
-            }
-            while (currentTodo != null) {
-                updatedList.add(currentTodo)
-                currentTodo = currentTodo.next
-            }
-
-            _listForUi.postValue(updatedList) // 백그라운드 스레드이므로 postValue
-        }
+        _listForUi.value = todoList.toList()
     }
 
+    /**
+     * 드래그&드롭 -> 위치 변경
+     */
+    fun swapTodos(fromIdx: Int, toIdx: Int): Boolean {
+        isSwapping = true
 
-    fun swapTodos(fromTodo: TodoItem.Todo, toTodo: TodoItem): Boolean {
-        if (fromTodo.done.value == true && toTodo is TodoItem.DoneHeader) { // todo -> done
+        val fromTodo = todoList[fromIdx] as TodoItem.Todo
+        // 할 일 -> 완료 영역으로 넘어갈 때
+        if (fromTodo.done.value == true && todoList[toIdx] is TodoItem.DoneHeader) {
+            _numOfTodo.value = _numOfTodo.value!! + 1
+            _numOfDone.value = _numOfDone.value!! - 1
             fromTodo.done.value = false
-            removeTodo(fromTodo)
-            addDoneFirst(fromTodo)
-            updateListForUi()
-        } else if (fromTodo.done.value == false && toTodo is TodoItem.DoneHeader){ // done -> todo
+        } // 완료 -> 할 일 영역
+        else if (fromTodo.done.value == false && todoList[toIdx] is TodoItem.DoneHeader) {
+            _numOfTodo.value = _numOfTodo.value!! - 1
+            _numOfDone.value = _numOfDone.value!! + 1
             fromTodo.done.value = true
-            removeDone(fromTodo)
-            addTodoLast(fromTodo)
-            updateListForUi()
-        } else { // 같은 영역 안에서 스왑
-            val toItem = toTodo as TodoItem.Todo
-            fromTodo.next = toItem.next
-            toItem.next?.let { it.prev = fromTodo }
-
-            toItem.prev = fromTodo.prev
-            fromTodo.prev?.let { it.next = toItem }
         }
 
+        Collections.swap(todoList, fromIdx, toIdx)
+        updateListForUi()
+        isSwapping = false
         return true
     }
 
     /**
-     * 할 일 완료 or 복귀 동작
+     * 사용자가 체크박스를 클릭했을 때 동작(완료/복귀)
      */
-    fun onTodoStatusChanged(todo: TodoItem.Todo, done: Boolean) {
-        if (done) {
-            completeTodo(todo)
+    fun onCheckboxChecked(idx: Int, checked: Boolean) {
+        // 드래그&드롭으로 위치를 바꾸는 중에 호출되면 리턴
+        if (todoList[idx] is TodoItem.DoneHeader) return
+        val todo = todoList[idx] as TodoItem.Todo
+        if (todo.done.value == checked) return // onBindViewHolder() 과정에서 호출되면 리턴
+
+        todo.done.value = checked
+        if (checked) {
+            completeTodo(idx)
         } else {
-            rollBackToTodo(todo)
+            rollBackToTodo(idx)
         }
     }
 
@@ -285,6 +194,6 @@ class TodoViewModel : ViewModel() {
      */
     fun onClickConfirmAdd(todoText: String) {
         val todo = TodoItem.Todo(i++, todoText)
-        addTodoFirst(todo)
+        add(todo)
     }
 }

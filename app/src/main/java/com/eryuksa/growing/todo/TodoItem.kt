@@ -8,16 +8,10 @@ sealed class TodoItem {
     data class Todo(
         val todoId: Long,
         var contents: String,
-        val done: MutableLiveData<Boolean> = MutableLiveData(false),
-        var prev: Todo? = null,
-        var next: Todo? = null
+        var done: MutableLiveData<Boolean> = MutableLiveData(false),
     ) : TodoItem() {
         override val id: Long
             get() = todoId
-
-        override fun toString(): String {
-            return "Todo(todoId=$todoId, contents=$contents, done=${done.value})"
-        }
     }
 
     object DoneHeader : TodoItem() {
