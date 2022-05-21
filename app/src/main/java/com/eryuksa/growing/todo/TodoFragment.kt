@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -64,6 +65,10 @@ class TodoFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         calculateDialogInsetBtmAndPercentX()
+        data class A(val a: MutableLiveData<Boolean> = MutableLiveData(false))
+        val a = A()
+        val b = A();
+        Log.d("로그", "a == b, ${a == b}")
 
         val scaleX = ObjectAnimator.ofFloat(binding.imgQuotation,"scaleX", 0.8f)
         scaleX.repeatCount = ValueAnimator.INFINITE
@@ -76,6 +81,7 @@ class TodoFragment : Fragment() {
         animSet.start()
 
         todoViewModel.listForUi.observe(viewLifecycleOwner) {
+            Log.d("로그", "submitList() called, list: $it")
             todoAdapter.submitList(it)
         }
 
@@ -94,6 +100,7 @@ class TodoFragment : Fragment() {
             layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
             adapter = todoAdapter
             ItemTouchHelper(todoTouchHelper).attachToRecyclerView(this) // 드래그 드롭 터치 헬퍼
+            scheduleLayoutAnimation()
         }
     }
 
@@ -138,7 +145,7 @@ class TodoFragment : Fragment() {
                 return makeMovementFlags(0, 0)
             }
 
-            return makeMovementFlags(ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0)
+            return makeMovementFlags(ItemTouchHelper.UP or ItemTouchHelper.DOWN, ItemTouchHelper.END)
         }
 
         override fun onMove(
@@ -154,10 +161,12 @@ class TodoFragment : Fragment() {
         }
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-            TODO("Not yet implemented")
+            Log.d("로그", "onSwiped")
+            val pos = viewHolder.adapterPosition
+            todoViewModel.onSwipeTodo(pos)
+
         }
     }
-
 
     companion object {
         fun newInstance(): TodoFragment {

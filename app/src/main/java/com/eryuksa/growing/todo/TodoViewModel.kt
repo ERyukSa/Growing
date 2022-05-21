@@ -1,5 +1,6 @@
 package com.eryuksa.growing.todo
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
@@ -66,6 +67,7 @@ class TodoViewModel : ViewModel() {
      * 할 일 -> 완료
      */
     private fun completeTodo(idx: Int) {
+        Log.d("로그", "completeTodo(idx=$idx) called")
         val todo = todoList[idx] as TodoItem.Todo
         removeFromTodo(idx)
         moveToDone(todo)
@@ -114,6 +116,7 @@ class TodoViewModel : ViewModel() {
      * 완료 -> 할 일
      */
     private fun rollBackToTodo(idx: Int) {
+        Log.d("로그", "rollBackToTodo(idx=$idx) called")
         val todo = todoList[idx] as TodoItem.Todo
         removeFromDone(idx)
         moveToTodo(todo)
@@ -126,8 +129,10 @@ class TodoViewModel : ViewModel() {
     fun rollBackFromRemoved() {
 
         removedTodo?.let { todo ->
-            // 완료 항목이 0개인 상태에서 되돌리기 -> 헤더도 함께 추가
-            if (_numOfDone.value == 0) todoList.add(doneHeader)
+            // 완료가 0개인 상태에서 삭제된 항목 되돌리기 -> 헤더도 함께 추가
+            if (todo.done.value == true && _numOfDone.value == 0) {
+                todoList.add(doneHeader)
+            }
             todoList.add(removedIdx, todo)
 
             if (todo.done.value == true) {
@@ -154,15 +159,17 @@ class TodoViewModel : ViewModel() {
         isSwapping = true
 
         val fromTodo = todoList[fromIdx] as TodoItem.Todo
-        // 할 일 -> 완료 영역으로 넘어갈 때
+        // 완료 -> 할 일 영역으로 넘어갈 때
         if (fromTodo.done.value == true && todoList[toIdx] is TodoItem.DoneHeader) {
             _numOfTodo.value = _numOfTodo.value!! + 1
             _numOfDone.value = _numOfDone.value!! - 1
+            fromTodo.prevDone = true
             fromTodo.done.value = false
-        } // 완료 -> 할 일 영역
+        } // 할 일 -> 완료 영역
         else if (fromTodo.done.value == false && todoList[toIdx] is TodoItem.DoneHeader) {
             _numOfTodo.value = _numOfTodo.value!! - 1
             _numOfDone.value = _numOfDone.value!! + 1
+            fromTodo.prevDone = false
             fromTodo.done.value = true
         }
 
@@ -173,20 +180,27 @@ class TodoViewModel : ViewModel() {
     }
 
     /**
-     * 사용자가 체크박스를 클릭했을 때 동작(완료/복귀)
+     * 사용자가 체크박스를 클릭했을 때 동작 (완료/복귀)
      */
-    fun onCheckboxChecked(idx: Int, checked: Boolean) {
-        // 드래그&드롭으로 위치를 바꾸는 중에 호출되면 리턴
-        if (todoList[idx] is TodoItem.DoneHeader) return
-        val todo = todoList[idx] as TodoItem.Todo
-        if (todo.done.value == checked) return // onBindViewHolder() 과정에서 호출되면 리턴
+    fun changeTodoStatus(idx: Int, newStatus: Boolean) {
+        try {
+            val todo = todoList[idx] as TodoItem.Todo
+            // 이미 투두 상태가 체크박스와 같으면 리턴
+            if (todo.currentDone == newStatus) return
 
-        todo.done.value = checked
-        if (checked) {
-            completeTodo(idx)
-        } else {
-            rollBackToTodo(idx)
-        }
+            todo.prevDone = todo.currentDone
+            todo.done.value = newStatus
+            if (newStatus) {
+                completeTodo(idx)
+            } else {
+                rollBackToTodo(idx)
+            }
+        } catch (e: Exception){}
+    }
+
+    fun onSwipeTodo(idx: Int) {
+        val todo = todoList[idx] as TodoItem.Todo
+        changeTodoStatus(idx, todo.currentDone.not())
     }
 
     /** ---------------------------------------------------------------------------

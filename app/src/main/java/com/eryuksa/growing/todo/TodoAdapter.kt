@@ -1,5 +1,6 @@
 package com.eryuksa.growing.todo
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
@@ -25,6 +26,7 @@ class TodoAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        Log.d("로그", "onCreateViewHolder() called")
         return when (viewType) {
             ITEM_VIEW_TYPE_TODO -> TodoViewHolder.from(parent, viewModel, lifecycleOwner)
             ITEM_VIEW_TYPE_DONE_HEADER -> HeaderViewHolder.from(parent, viewModel, lifecycleOwner)
@@ -33,6 +35,7 @@ class TodoAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        Log.d("로그", "onBindViewHolder(position=$position) called")
         if (holder is TodoViewHolder) {
             val todo = getItem(position) as TodoItem.Todo
             holder.bind(todo)
@@ -84,8 +87,20 @@ class TodoDiffCallback : DiffUtil.ItemCallback<TodoItem>() {
         return oldItem.id == newItem.id
     }
 
-    // 동일한 데이터를 갖고 있는지
+    // 객체는 같지만 데이터가 변경됐는지 확인: false -> onBindViewHolder() 호출
     override fun areContentsTheSame(oldItem: TodoItem, newItem: TodoItem): Boolean {
-        return oldItem == newItem
+
+        // DoneHeader는 항상 같다
+        if (oldItem is TodoItem.DoneHeader){
+            return true
+        } else {
+            val oldOne = oldItem as TodoItem.Todo
+            val newOne = newItem as TodoItem.Todo
+            if (oldOne.contents == newOne.contents && oldOne.prevDone == newOne.currentDone) {
+                return true
+            }
+        }
+
+        return false
     }
 }
