@@ -11,34 +11,34 @@ import android.view.ViewGroup
 import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.eryuksa.growing.R
 import com.eryuksa.growing.databinding.FragmentTodoBinding
 import com.eryuksa.growing.todo.add.AddTodoDialog
+import com.eryuksa.growing.todo.data.TodoDatabase
 import com.eryuksa.growing.util.EventObserver
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import kotlin.math.round
 
 class TodoFragment : Fragment() {
 
     private lateinit var binding: FragmentTodoBinding
-    private val todoViewModel: TodoViewModel by activityViewModels() // AddTodoDialog와 공유
+
+    // AddTodoDialog와 공유
+    private val todoViewModel: TodoViewModel by activityViewModels{
+        val todoDao = TodoDatabase.getDatabase(requireContext()).todoDao()
+        TodoViewModelFactory(todoDao)
+    }
 
     private val todoAdapter: TodoAdapter by lazy { TodoAdapter(todoViewModel, viewLifecycleOwner) }
 
     private var percentOfCenterX = 0.0
     private var insetBtmOfDialog = 0
 
-    private val btmNavView: BottomNavigationView by lazy {
-        requireActivity().findViewById(R.id.bottom_view)
-    }
     private val removedSnackBar: Snackbar by lazy {
         Snackbar.make(binding.root, R.string.removed, Snackbar.LENGTH_SHORT).apply {
-            //anchorView = btmNavView
             setAction("되돌리기") {
                 todoViewModel.rollBackFromRemoved()
                 this.dismiss()
@@ -65,10 +65,6 @@ class TodoFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         calculateDialogInsetBtmAndPercentX()
-        data class A(val a: MutableLiveData<Boolean> = MutableLiveData(false))
-        val a = A()
-        val b = A();
-        Log.d("로그", "a == b, ${a == b}")
 
         val scaleX = ObjectAnimator.ofFloat(binding.imgQuotation,"scaleX", 0.8f)
         scaleX.repeatCount = ValueAnimator.INFINITE
@@ -81,7 +77,6 @@ class TodoFragment : Fragment() {
         animSet.start()
 
         todoViewModel.listForUi.observe(viewLifecycleOwner) {
-            Log.d("로그", "submitList() called, list: $it")
             todoAdapter.submitList(it)
         }
 
@@ -110,9 +105,8 @@ class TodoFragment : Fragment() {
         if (resId > 0) {
             statusBarHeight = resources.getDimensionPixelSize(resId)
         }*/
-        val fab = binding.floatingActionButton
 
-        fab.doOnLayout {
+        binding.floatingActionButton.doOnLayout { fab ->
             // status bar가 포함x
             val screenWidth = resources.displayMetrics.widthPixels
             val screenHeight = resources.displayMetrics.heightPixels
@@ -145,7 +139,8 @@ class TodoFragment : Fragment() {
                 return makeMovementFlags(0, 0)
             }
 
-            return makeMovementFlags(ItemTouchHelper.UP or ItemTouchHelper.DOWN, ItemTouchHelper.END)
+            return makeMovementFlags(ItemTouchHelper.UP or ItemTouchHelper.DOWN,
+                ItemTouchHelper.START or ItemTouchHelper.END)
         }
 
         override fun onMove(
@@ -161,10 +156,12 @@ class TodoFragment : Fragment() {
         }
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-            Log.d("로그", "onSwiped")
             val pos = viewHolder.adapterPosition
-            todoViewModel.onSwipeTodo(pos)
-
+            if (direction == ItemTouchHelper.END) {
+                todoViewModel.onSwipeTodo(pos)
+            } else {
+                todoViewModel.remove(pos)
+            }
         }
     }
 

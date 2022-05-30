@@ -1,14 +1,17 @@
 package com.eryuksa.growing.todo
 
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
+import com.eryuksa.growing.todo.data.TodoDao
+import com.eryuksa.growing.todo.data.TodoItem
 import com.eryuksa.growing.util.Event
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.joda.time.DateTime
 import java.util.*
 
-class TodoViewModel : ViewModel() {
+class TodoViewModel(private val todoDao: TodoDao) : ViewModel(), DefaultLifecycleObserver {
 
     private val todoList = mutableListOf<TodoItem>()
     private val doneHeader = TodoItem.DoneHeader
@@ -35,7 +38,53 @@ class TodoViewModel : ViewModel() {
     // 항목 위치 변경 중
     var isSwapping = false
 
-    private var i = 0L // 객체 아이디
+    init {
+        loadTodoList()
+    }
+
+    /**
+     * DB에서 Todo를 가져옵니다
+     */
+    private fun loadTodoList() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val loadedTodoList =
+                todoDao.getTodoByMillis(DateTime.now().withTimeAtStartOfDay().millis)
+            if (loadedTodoList.isEmpty()) return@launch
+            todoList.addAll(loadedTodoList)
+
+            // 완료된 일이 있으면 앞에 헤더를 추가
+            val firstDoneIdx = loadedTodoList.indexOfFirst { it.currentDone == true }
+            if (firstDoneIdx != -1) {
+                headerIdx = firstDoneIdx
+                todoList.add(firstDoneIdx, TodoItem.DoneHeader)
+            }
+
+            withContext(Dispatchers.Main) {
+                updateListForUi()
+            }
+        }
+    }
+
+    /**
+     * 현재 상황을 DB에 저장
+     */
+    private fun saveTodo() {
+        if (todoList.isEmpty()) return
+
+        GlobalScope.launch(Dispatchers.Default) {
+            todoList.filter { it is TodoItem.Todo }
+                .forEachIndexed { i, todoItem ->
+                    val todo = (todoItem as TodoItem.Todo)
+                    todo.position = i
+                    todoDao.insert(todo)
+                }
+        }
+    }
+
+    override fun onPause(owner: LifecycleOwner) {
+        super.onPause(owner)
+        saveTodo()
+    }
 
     /**
      * 할 일 추가
@@ -67,7 +116,6 @@ class TodoViewModel : ViewModel() {
      * 할 일 -> 완료
      */
     private fun completeTodo(idx: Int) {
-        Log.d("로그", "completeTodo(idx=$idx) called")
         val todo = todoList[idx] as TodoItem.Todo
         removeFromTodo(idx)
         moveToDone(todo)
@@ -88,6 +136,9 @@ class TodoViewModel : ViewModel() {
         } else {
             removeFromTodo(idx)
         }
+
+        // DB에서 삭제
+        GlobalScope.launch { todoDao.delete(removedTodo!!)  }
 
         _showRemovedSnackbar.value = Event(Unit) // 스낵바 요청
         updateListForUi()
@@ -116,7 +167,6 @@ class TodoViewModel : ViewModel() {
      * 완료 -> 할 일
      */
     private fun rollBackToTodo(idx: Int) {
-        Log.d("로그", "rollBackToTodo(idx=$idx) called")
         val todo = todoList[idx] as TodoItem.Todo
         removeFromDone(idx)
         moveToTodo(todo)
@@ -195,7 +245,8 @@ class TodoViewModel : ViewModel() {
             } else {
                 rollBackToTodo(idx)
             }
-        } catch (e: Exception){}
+        } catch (e: Exception) {
+        }
     }
 
     fun onSwipeTodo(idx: Int) {
@@ -207,7 +258,17 @@ class TodoViewModel : ViewModel() {
      * used in AddTodoDialog
      */
     fun onClickConfirmAdd(todoText: String) {
-        val todo = TodoItem.Todo(i++, todoText)
+        val todo = TodoItem.Todo(todoText)
         add(todo)
+    }
+}
+
+class TodoViewModelFactory(private val todoDao: TodoDao) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(TodoViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return TodoViewModel(todoDao) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

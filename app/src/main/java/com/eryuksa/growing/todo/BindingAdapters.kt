@@ -1,7 +1,6 @@
 package com.eryuksa.growing.todo
 
 import android.graphics.Paint
-import android.util.Log
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 
@@ -12,7 +11,6 @@ import androidx.databinding.BindingAdapter
 fun setStrikeThrough(textView: TextView, strikeThroughOn: Boolean) {
 
     if (strikeThroughOn) {
-        Log.d("로그", "setStrikeThrough()")
         textView.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
     } else {
         textView.paintFlags = 0

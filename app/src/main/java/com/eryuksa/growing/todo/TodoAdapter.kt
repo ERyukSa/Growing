@@ -1,6 +1,5 @@
 package com.eryuksa.growing.todo
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
@@ -9,6 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.eryuksa.growing.databinding.ItemDoneHeaderBinding
 import com.eryuksa.growing.databinding.ItemTodoBinding
+import com.eryuksa.growing.todo.data.TodoItem
 
 private const val ITEM_VIEW_TYPE_TODO = 0
 private const val ITEM_VIEW_TYPE_DONE_HEADER = 1
@@ -26,7 +26,6 @@ class TodoAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        Log.d("로그", "onCreateViewHolder() called")
         return when (viewType) {
             ITEM_VIEW_TYPE_TODO -> TodoViewHolder.from(parent, viewModel, lifecycleOwner)
             ITEM_VIEW_TYPE_DONE_HEADER -> HeaderViewHolder.from(parent, viewModel, lifecycleOwner)
@@ -35,7 +34,6 @@ class TodoAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        Log.d("로그", "onBindViewHolder(position=$position) called")
         if (holder is TodoViewHolder) {
             val todo = getItem(position) as TodoItem.Todo
             holder.bind(todo)

@@ -1,5 +1,6 @@
 package com.eryuksa.growing.todo.add
 
+import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.InsetDrawable
@@ -8,12 +9,16 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.eryuksa.growing.R
 import com.eryuksa.growing.databinding.DialogAddTodoBinding
 import com.eryuksa.growing.todo.TodoViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class AddTodoDialog : DialogFragment() {
 
@@ -42,6 +47,13 @@ class AddTodoDialog : DialogFragment() {
     ): View {
         binding = DialogAddTodoBinding.inflate(inflater, container, false)
         setUpBinding()
+        // 키보드가 올라오면 window의 bottomInset을 없애서 키보드 위에 붙인다
+        lifecycleScope.launch {
+            delay(600)
+            showInputMethod()
+            delay(300)
+            removeInsetBtmOfWindow()
+        }
         return binding.root
     }
 
@@ -68,6 +80,22 @@ class AddTodoDialog : DialogFragment() {
         binding.sharedViewModel = sharedViewModel
         binding.dialogViewModel = dialogViewModel
         binding.variableEditTextTodo = binding.editText
+    }
+
+
+    private fun showInputMethod(){
+        val inputManager =
+            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputManager.showSoftInput(binding.editText, InputMethodManager.SHOW_FORCED)
+    }
+
+    /**
+     * // 키보드 up -> insetBottom을 제거해서 키보드와 붙인다
+     */
+    private fun removeInsetBtmOfWindow() {
+        val colorDrawable = ColorDrawable(Color.TRANSPARENT)
+        val insetDrawable = InsetDrawable(colorDrawable, 0, 0, 0, 0)
+        requireDialog().window?.setBackgroundDrawable(insetDrawable)
     }
 
     /**
