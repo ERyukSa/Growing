@@ -47,23 +47,37 @@ class TodoViewModel(private val todoDao: TodoDao) : ViewModel() {
      * DB에서 Todo를 가져옵니다
      */
     private fun loadTodoList() {
+
         viewModelScope.launch(Dispatchers.IO) {
             val loadedTodoList =
                 todoDao.getTodoByMillis(DateTime.now().withTimeAtStartOfDay().millis)
             if (loadedTodoList.isEmpty()) return@launch
             todoList.addAll(loadedTodoList)
 
-            // 완료된 일이 있으면 앞에 헤더를 추가
             val firstDoneIdx = loadedTodoList.indexOfFirst { it.currentDone == true }
+            // 완료된 일이 있으면 앞에 헤더를 추가
             if (firstDoneIdx != -1) {
-                headerIdx = firstDoneIdx
-                todoList.add(firstDoneIdx, TodoItem.DoneHeader)
+                setUpDoneHeader(firstDoneIdx)
             }
 
             withContext(Dispatchers.Main) {
+                setUpNumOfTodo() // 할일, 완료 개수 초기화
                 updateListForUi()
             }
         }
+    }
+
+    private fun setUpDoneHeader(firstDoneIdx: Int) {
+        headerIdx = firstDoneIdx
+        todoList.add(firstDoneIdx, TodoItem.DoneHeader)
+    }
+
+    /**
+     * 처음에 Room에서 불러오고 나서 할일/완료 개수 초기화
+     */
+    private fun setUpNumOfTodo() {
+        _numOfTodo.value = headerIdx
+        _numOfDone.value = todoList.size - headerIdx - 1
     }
 
     /**
