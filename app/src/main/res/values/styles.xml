@@ -28,7 +28,7 @@
     </style>
 
     <style name="TimePickerStyle" parent="ThemeOverlay.MaterialComponents.TimePicker" >
-        <item name="colorControlNormal">@color/gray_date</item>
+        <item name="colorControlNormal">@color/grey_date</item>
     </style>
     <style name="DatePickerStyle" parent="@android:style/Widget.Material.Light.DatePicker">
         <item name="colorAccent">@color/grey_selected</item>

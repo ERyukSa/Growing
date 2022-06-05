@@ -1,5 +1,6 @@
 package com.eryuksa.growing.todo
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.eryuksa.growing.todo.data.TodoDao
 import com.eryuksa.growing.todo.data.TodoItem
@@ -11,7 +12,7 @@ import kotlinx.coroutines.withContext
 import org.joda.time.DateTime
 import java.util.*
 
-class TodoViewModel(private val todoDao: TodoDao) : ViewModel(), DefaultLifecycleObserver {
+class TodoViewModel(private val todoDao: TodoDao) : ViewModel() {
 
     private val todoList = mutableListOf<TodoItem>()
     private val doneHeader = TodoItem.DoneHeader
@@ -68,7 +69,9 @@ class TodoViewModel(private val todoDao: TodoDao) : ViewModel(), DefaultLifecycl
     /**
      * 현재 상황을 DB에 저장
      */
-    private fun saveTodo() {
+    fun saveTodo() {
+        Log.d("로그", "TodoViewModel saveTodo called")
+
         if (todoList.isEmpty()) return
 
         GlobalScope.launch(Dispatchers.Default) {
@@ -78,12 +81,8 @@ class TodoViewModel(private val todoDao: TodoDao) : ViewModel(), DefaultLifecycl
                     todo.position = i
                     todoDao.insert(todo)
                 }
+            Log.d("로그", "TodoViewModel todoList saved")
         }
-    }
-
-    override fun onPause(owner: LifecycleOwner) {
-        super.onPause(owner)
-        saveTodo()
     }
 
     /**
@@ -257,9 +256,16 @@ class TodoViewModel(private val todoDao: TodoDao) : ViewModel(), DefaultLifecycl
     /** ---------------------------------------------------------------------------
      * used in AddTodoDialog
      */
+
+    // 할 일 추가 후 텍스트 초기화
+    private var _clearText = MutableLiveData<Event<Unit>>()
+    val clearText: LiveData<Event<Unit>>
+        get() = _clearText
+
     fun onClickConfirmAdd(todoText: String) {
         val todo = TodoItem.Todo(todoText)
         add(todo)
+        _clearText.value = Event(Unit)
     }
 }
 

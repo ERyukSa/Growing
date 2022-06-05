@@ -44,7 +44,7 @@
 
     <string name="todo">할 일</string>
     <string name="done">끝마침!</string>
-    <string name="todo_what">오늘은 어떤 일을 하실 건가요?</string>
+    <string name="todo_what">어떤 일을 하실 건가요?</string>
     <string name="add_todo">할 일 추가하기</string>
     <string name="removed">할 일이 삭제됐어요.</string>
 

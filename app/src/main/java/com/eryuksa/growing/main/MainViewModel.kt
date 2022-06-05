@@ -10,7 +10,7 @@ private const val TAG = "MainViewModel"
 
 class MainViewModel : ViewModel() {
 
-    private val _currentFragmentType = MutableLiveData(MainFragmentType.MIRACLE_MORNING)
+    private val _currentFragmentType = MutableLiveData(MainFragmentType.TODO)
 
     val currentFragmentType: LiveData<MainFragmentType>
         get() = _currentFragmentType
@@ -20,7 +20,7 @@ class MainViewModel : ViewModel() {
         return try{
             _currentFragmentType.value = getFragmentType(menuItemId)
             true
-        } catch (e: java.lang.IllegalArgumentException) {
+        } catch (e: IllegalArgumentException) {
             Log.e(TAG, e.message ?: "error occurred in setFragmentType()")
             false
         }

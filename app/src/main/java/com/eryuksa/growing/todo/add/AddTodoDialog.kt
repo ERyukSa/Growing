@@ -17,6 +17,7 @@ import androidx.lifecycle.lifecycleScope
 import com.eryuksa.growing.R
 import com.eryuksa.growing.databinding.DialogAddTodoBinding
 import com.eryuksa.growing.todo.TodoViewModel
+import com.eryuksa.growing.util.EventObserver
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -47,6 +48,7 @@ class AddTodoDialog : DialogFragment() {
     ): View {
         binding = DialogAddTodoBinding.inflate(inflater, container, false)
         setUpBinding()
+
         // 키보드가 올라오면 window의 bottomInset을 없애서 키보드 위에 붙인다
         lifecycleScope.launch {
             delay(600)
@@ -54,6 +56,7 @@ class AddTodoDialog : DialogFragment() {
             delay(300)
             removeInsetBtmOfWindow()
         }
+
         return binding.root
     }
 
@@ -61,18 +64,9 @@ class AddTodoDialog : DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         setUpDialogWindow()
 
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-
-            requireDialog().window?.setDecorFitsSystemWindows(false)
-            requireDialog().window?.decorView?.setOnApplyWindowInsetsListener { _, windowInsets ->
-                val imeHeight = windowInsets.getInsets(WindowInsetsCompat.Type.ime()).bottom
-                val statusHeight = windowInsets.getInsets(WindowInsets.Type.systemBars()).top
-                view.setPadding(0, statusHeight, 0, imeHeight)
-                windowInsets
-            }
-        } else {
-            requireDialog().window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
-        }*/
+        sharedViewModel.clearText.observe(viewLifecycleOwner, EventObserver{
+            binding.editText.text.clear()
+        })
     }
 
     private fun setUpBinding() {

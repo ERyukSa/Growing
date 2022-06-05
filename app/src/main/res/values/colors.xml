@@ -9,12 +9,15 @@
     <color name="blackOnSurface">#0f0f0f</color>
     <color name="background">@color/white</color>
     <color name="grey_selected">#3C696969</color>
+    <color name="grey2">#F8696969</color>
+    <color name="grey_ripple">#A0A0A0</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="gray_date">#A9D4D4D4</color>
+    <color name="grey_date">#A9D4D4D4</color>
     <color name="red_sunday">#EF5350</color>
     <color name="red_sunday_dim">#8DF0524F</color>
-    <color name="blue_saturday">#3F51B5</color>
-    <color name="blue_saturday_dim">#7C3F51B5</color>
+    <color name="blue">#3F51B5</color>
+    <color name="blue2">#4C61D9</color>
+    <color name="blue_dim">#7C3F51B5</color>
     <color name="gold">#ffd700</color>
 
     <color name="green_stamp">#CE00C853</color>

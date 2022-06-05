@@ -20,14 +20,14 @@ class DateViewModel(private val miracleDate: MiracleDate, private val displayMon
             return if (currentMonthDate.isEqual(displayMonthDate)) {
                 when (miracleDate.dateTime.dayOfWeek) {
                     7 -> R.color.red_sunday
-                    6 -> R.color.blue_saturday
+                    6 -> R.color.blue
                     else -> R.color.text
                 }
             } else { // 이전 or 다음 달의 날짜일 때
                 when (miracleDate.dateTime.dayOfWeek) {
                     7 -> R.color.red_sunday_dim
-                    6 -> R.color.blue_saturday_dim
-                    else -> R.color.gray_date
+                    6 -> R.color.blue_dim
+                    else -> R.color.grey_date
                 }
             }
         }

@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -39,6 +40,7 @@ class TodoFragment : Fragment() {
 
     private val removedSnackBar: Snackbar by lazy {
         Snackbar.make(binding.root, R.string.removed, Snackbar.LENGTH_SHORT).apply {
+            setActionTextColor(ContextCompat.getColor(context, R.color.blue))
             setAction("되돌리기") {
                 todoViewModel.rollBackFromRemoved()
                 this.dismiss()
@@ -88,6 +90,14 @@ class TodoFragment : Fragment() {
         todoViewModel.showRemovedSnackbar.observe(viewLifecycleOwner, EventObserver{
             removedSnackBar.show()
         })
+    }
+
+    /**
+     * UI의 투두 상태를 DB에 반영
+     */
+    override fun onPause() {
+        super.onPause()
+        todoViewModel.saveTodo()
     }
 
     private fun setUpRecyclerView() {

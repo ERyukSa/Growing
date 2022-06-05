@@ -23,16 +23,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        initBinding(savedInstanceState)
-        observeFragmentType()
-    }
-
-    private fun initBinding(savedInstanceState: Bundle?) {
         binding.viewModel = viewModel
-        // 앱에 처음 진입할 때 보여줄 화면
-        // 액티비티가 재생성 됐을 때는 동작x
 
-        binding.bottomView.selectedItemId = R.id.menu_miracle_morning
+        observeFragmentType()
     }
 
     // 프래그먼트 타입이 변경되면, 화면에 보여줄 프래그먼트를 변경한다
