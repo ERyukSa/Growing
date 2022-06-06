@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "819411556498",
+    "project_id": "growing-342409",
+    "storage_bucket": "growing-342409.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:819411556498:android:72dcb9e0bad10fdd792e4b",
+        "android_client_info": {
+          "package_name": "com.eryuksa.growing"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "819411556498-usr4jlie7rjfps6m280i07u8bukvet8g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.eryuksa.growing",
+            "certificate_hash": "15ce4117bcc52458e972976a80e0c7967a992a77"
+          }
+        },
+        {
+          "client_id": "819411556498-hnns78nvpes55ma3ctk4830o3u03pbgr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBzX4atil7XoWT0G2DJ0MW15iRC-T2LYSk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "819411556498-hnns78nvpes55ma3ctk4830o3u03pbgr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
